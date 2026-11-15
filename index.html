@@ -1,0 +1,2934 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Revolución del Software con Craft Anything — Tutorial Maestro V002</title>
+<style>
+:root {
+  --bg-main: #0a0e1a;
+  --bg-card: #0f172a;
+  --bg-elevated: #1e293b;
+  --accent-blue: #1e3a5f;
+  --text-main: #e2e8f0;
+  --text-muted: #94a3b8;
+  --brand-primary: #38bdf8;
+  --brand-secondary: #00d4ff;
+  --brand-purple: #a855f7;
+  --brand-emerald: #10b981;
+  --brand-amber: #f59e0b;
+  --brand-danger: #ef4444;
+  --border-subtle: #1e3a5f;
+  --font-size-base: 16px;
+  --nav-height: 58px;
+}
+
+body.light-theme {
+  --bg-main: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-elevated: #e2e8f0;
+  --accent-blue: #cbd5e1;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --brand-primary: #0284c7;
+  --brand-secondary: #0369a1;
+  --border-subtle: #cbd5e1;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-size: var(--font-size-base);
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.65;
+  overflow-x: hidden;
+  padding-top: calc(var(--nav-height) + 46px);
+  padding-bottom: 90px;
+}
+
+/* BARRA DE PROGRESO SUPERIOR */
+#reading-progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(15, 23, 42, 0.8);
+  z-index: 60;
+}
+#reading-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--brand-primary), var(--brand-purple), var(--brand-emerald));
+  transition: width 0.15s ease-out;
+}
+
+/* BARRA DE NAVEGACIÓN PRINCIPAL FIJA */
+#top-navigation {
+  position: fixed;
+  top: 4px;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  background: rgba(15, 23, 42, 0.96);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  overflow-x: auto;
+  white-space: nowrap;
+  z-index: 40;
+  scrollbar-width: thin;
+}
+body.light-theme #top-navigation {
+  background: rgba(255, 255, 255, 0.96);
+}
+#top-navigation::-webkit-scrollbar {
+  height: 3px;
+}
+#top-navigation::-webkit-scrollbar-thumb {
+  background: var(--brand-primary);
+  border-radius: 3px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.chip:hover, .chip:focus-visible {
+  border-color: var(--brand-primary);
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 1px;
+}
+.chip.active {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(168, 85, 247, 0.22));
+  border-color: var(--brand-primary);
+  color: var(--brand-secondary);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+}
+
+/* PANEL LATERAL ÍNDICE (#dr) SEGÚN ESPECIFICACIÓN EXACTA */
+#dr {
+  position: fixed;
+  top: 62px;
+  left: 0;
+  bottom: 0;
+  width: min(330px, 88vw);
+  background: #0f172a;
+  border-right: 1px solid #1e3a5f;
+  transform: translateX(-105%);
+  transition: .25s;
+  z-index: 50;
+  overflow: auto;
+  padding: 10px;
+  box-shadow: 8px 0 24px rgba(0, 0, 0, 0.6);
+}
+#dr.o {
+  transform: none;
+}
+#dr a {
+  display: block;
+  padding: 12px;
+  border-radius: 8px;
+  color: #e2e8f0;
+  cursor: pointer;
+  min-height: 44px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+#dr a:hover, #dr a:focus-visible {
+  background: #ffffff0d;
+  border-color: #38bdf844;
+  outline: none;
+}
+#dr a.on {
+  background: #00d4ff22;
+  color: #00d4ff;
+  font-weight: 700;
+  border-color: #00d4ff55;
+}
+
+/* BARRA SECUNDARIA DE HERRAMIENTAS ACCESIBLES */
+#utility-bar {
+  position: fixed;
+  top: 62px;
+  left: 0;
+  right: 0;
+  min-height: 44px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 10px;
+  gap: 6px;
+  z-index: 35;
+  flex-wrap: wrap;
+}
+.search-box {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 150px;
+  max-width: 380px;
+  position: relative;
+}
+.search-box input {
+  width: 100%;
+  min-height: 36px;
+  padding: 4px 30px 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-size: 0.85rem;
+}
+.search-box button {
+  position: absolute;
+  right: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px;
+}
+.utility-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.tool-btn {
+  min-height: 36px;
+  min-width: 36px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.tool-btn:hover {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+/* RESULTADOS DE BÚSQUEDA INTERNA */
+#search-results-drawer {
+  display: none;
+  position: fixed;
+  top: 108px;
+  left: 10px;
+  right: 10px;
+  max-width: 560px;
+  max-height: 65vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 2px solid var(--brand-primary);
+  border-radius: 12px;
+  padding: 12px;
+  z-index: 55;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75);
+}
+.search-hit-item {
+  padding: 10px;
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer;
+  border-radius: 6px;
+}
+.search-hit-item:hover {
+  background: rgba(56, 189, 248, 0.12);
+}
+
+/* CONTENEDOR PRINCIPAL OPTIMIZADO DESDE 360PX (GALAXY A02S) A DESKTOP */
+main {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 12px 10px;
+}
+
+.tab-section {
+  display: none;
+  animation: fadeInSection 0.25s ease-out;
+}
+.tab-section.active {
+  display: block;
+}
+@keyframes fadeInSection {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* TIPOGRAFÍA Y JERARQUÍA */
+h1 {
+  font-size: clamp(1.45rem, 4.8vw, 2.35rem);
+  line-height: 1.25;
+  margin-bottom: 14px;
+  color: var(--text-main);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.byline-highlight {
+  display: inline-block;
+  background: linear-gradient(90deg, var(--brand-primary), var(--brand-purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 900;
+}
+h2 {
+  font-size: clamp(1.25rem, 4vw, 1.8rem);
+  color: var(--brand-primary);
+  margin: 18px 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border-subtle);
+}
+h3 {
+  font-size: clamp(1.08rem, 3.4vw, 1.35rem);
+  color: var(--brand-secondary);
+  margin: 16px 0 8px;
+}
+h4 {
+  font-size: 1rem;
+  color: var(--brand-amber);
+  margin: 12px 0 6px;
+}
+p {
+  margin-bottom: 12px;
+  word-wrap: break-word;
+}
+ul, ol {
+  margin: 0 0 14px 20px;
+}
+li {
+  margin-bottom: 6px;
+}
+
+/* TARJETAS Y PANELES EDUCATIVOS */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+.card-highlight {
+  border-left: 4px solid var(--brand-primary);
+  background: linear-gradient(145deg, var(--bg-card), rgba(30, 58, 95, 0.35));
+}
+.card-warning {
+  border-left: 4px solid var(--brand-amber);
+  background: linear-gradient(145deg, var(--bg-card), rgba(245, 158, 11, 0.12));
+}
+.card-success {
+  border-left: 4px solid var(--brand-emerald);
+  background: linear-gradient(145deg, var(--bg-card), rgba(16, 185, 129, 0.12));
+}
+.card-danger {
+  border-left: 4px solid var(--brand-danger);
+  background: linear-gradient(145deg, var(--bg-card), rgba(239, 68, 68, 0.12));
+}
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--brand-primary);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+.badge.lvl-1 { background: rgba(16, 185, 129, 0.16); color: #34d399; border-color: rgba(16, 185, 129, 0.4); }
+.badge.lvl-2 { background: rgba(245, 158, 11, 0.16); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4); }
+.badge.lvl-3 { background: rgba(168, 85, 247, 0.16); color: #c084fc; border-color: rgba(168, 85, 247, 0.4); }
+
+/* CONTENEDOR SVG HERO 4:5 VERTICAL ADAPTATIVO */
+.svg-hero-wrapper {
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 4 / 5;
+  margin: 0 auto 18px;
+  background: radial-gradient(circle at 50% 35%, #132347 0%, #070b14 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 212, 255, 0.18);
+}
+.svg-mount-target {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.svg-mount-target svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.svg-controls-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  max-width: 440px;
+  margin: -10px auto 18px;
+  padding: 6px 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  font-size: 0.8rem;
+}
+
+/* ANIMACIONES SVG MULTICAPA Y PREFERS-REDUCED-MOTION */
+@keyframes orbitClockwise {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes orbitCounterClockwise {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+@keyframes corePulse {
+  0%, 100% { transform: scale(1); opacity: 0.92; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+@keyframes floatPanel {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-7px); }
+}
+@keyframes scanBeam {
+  0% { transform: translateY(-160px); opacity: 0.15; }
+  50% { opacity: 0.75; }
+  100% { transform: translateY(180px); opacity: 0.15; }
+}
+@keyframes dataFlowDash {
+  to { stroke-dashoffset: -120; }
+}
+@keyframes nodeBlink {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+.svg-anim-cw {
+  transform-origin: 200px 235px;
+  animation: orbitClockwise 26s linear infinite;
+}
+.svg-anim-ccw {
+  transform-origin: 200px 235px;
+  animation: orbitCounterClockwise 18s linear infinite;
+}
+.svg-anim-core {
+  transform-origin: 200px 235px;
+  animation: corePulse 3.2s ease-in-out infinite;
+}
+.svg-anim-float-1 {
+  animation: floatPanel 4.5s ease-in-out infinite;
+}
+.svg-anim-float-2 {
+  animation: floatPanel 5.2s ease-in-out infinite 1.2s;
+}
+.svg-anim-scan {
+  animation: scanBeam 4s ease-in-out infinite;
+}
+.svg-anim-stream {
+  stroke-dasharray: 8 6;
+  animation: dataFlowDash 3s linear infinite;
+}
+.svg-anim-blink {
+  animation: nodeBlink 2.2s ease-in-out infinite;
+}
+
+.svg-paused * {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .svg-anim-cw, .svg-anim-ccw, .svg-anim-core, .svg-anim-float-1, .svg-anim-float-2, .svg-anim-scan, .svg-anim-stream, .svg-anim-blink {
+    animation: none !important;
+  }
+}
+
+/* BLOQUES DE CÓDIGO Y PROMPTS COPIABLES */
+.copy-block {
+  background: #050811;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  margin: 12px 0 16px;
+  overflow: hidden;
+}
+body.light-theme .copy-block {
+  background: #1e293b;
+  color: #f8fafc;
+}
+.copy-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(30, 58, 95, 0.45);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  gap: 8px;
+}
+.copy-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--brand-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.copy-btn {
+  min-height: 34px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--brand-primary);
+  background: rgba(56, 189, 248, 0.15);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.copy-btn:hover {
+  background: var(--brand-primary);
+  color: #050811;
+}
+pre.copy-content {
+  padding: 12px;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #e2e8f0;
+}
+
+/* COMPONENTE DE ENLACES URL CON BOTÓN OBLIGATORIO "ABRIR ENLACE EN NUEVA VENTANA" */
+.url-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+body.light-theme .url-card {
+  background: #f8fafc;
+}
+.url-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.url-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--text-main);
+}
+.url-code {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.82rem;
+  color: var(--brand-secondary);
+  word-break: break-all;
+}
+.url-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.btn-open-new-window {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: 1px solid #38bdf8;
+  cursor: pointer;
+  text-decoration: none;
+  flex: 1;
+  min-width: 210px;
+}
+.btn-open-new-window:hover {
+  filter: brightness(1.12);
+}
+.btn-copy-url {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  color: var(--text-main);
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+}
+
+/* TABLAS RESPONSIVAS SIN DESBORDE EN 360PX */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  margin: 12px 0 18px;
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 310px;
+  font-size: 0.88rem;
+}
+th, td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: top;
+}
+th {
+  background: rgba(30, 58, 95, 0.55);
+  color: var(--brand-primary);
+  font-weight: 700;
+}
+tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* TARJETAS DESPLEGABLES (DETAILS / SUMMARY) */
+details.qa-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+details.qa-item summary {
+  padding: 13px 14px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.95rem;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+}
+details.qa-item summary::-webkit-details-marker {
+  display: none;
+}
+details.qa-item summary::after {
+  content: "＋";
+  color: var(--brand-primary);
+  font-size: 1.1rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+details.qa-item[open] summary::after {
+  content: "－";
+}
+details.qa-item[open] summary {
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(56, 189, 248, 0.08);
+}
+.qa-body {
+  padding: 14px;
+  color: var(--text-main);
+}
+
+/* LISTAS DE COMPROBACIÓN INTERACTIVAS */
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  background: var(--bg-card);
+  cursor: pointer;
+}
+.checklist-item input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  accent-color: var(--brand-emerald);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.checklist-item.completed {
+  border-color: var(--brand-emerald);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+/* BOTONES DE NAVEGACIÓN INFERIOR EN CADA PESTAÑA (ANTERIOR / SIGUIENTE) */
+.tab-footer-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+  padding-top: 16px;
+  border-top: 2px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+.nav-step-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--brand-primary);
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  flex: 1;
+  min-width: 140px;
+  text-align: center;
+  transition: all 0.2s;
+}
+.nav-step-btn.next-btn {
+  background: linear-gradient(135deg, #0284c7, #4f46e5);
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+.nav-step-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.28);
+}
+
+/* BOTONES FLOTANTES ARRASTRABLES (MOVIBLES CON DEDO O RATÓN) */
+.draggable-fab {
+  position: fixed;
+  z-index: 48;
+  min-height: 46px;
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 2px solid var(--brand-primary);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.draggable-fab:active {
+  cursor: grabbing;
+  border-color: var(--brand-amber);
+}
+#fab-home {
+  bottom: 18px;
+  left: 12px;
+}
+#fab-top {
+  bottom: 18px;
+  right: 12px;
+}
+
+/* ESTILOS ESPECIALES DE CRÉDITOS */
+.credits-author-box {
+  text-align: center;
+  padding: 22px 14px;
+  background: radial-gradient(circle at center, rgba(56, 189, 248, 0.18), rgba(15, 23, 42, 0.95));
+  border: 2px solid var(--brand-primary);
+  border-radius: 16px;
+  margin: 16px 0;
+}
+.credits-author-name {
+  font-size: clamp(1.9rem, 6.5vw, 3.1rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  background: linear-gradient(90deg, #38bdf8, #a855f7, #10b981);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 6px;
+}
+.credits-author-role {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* NOTIFICACIÓN TOAST */
+#toast-notification {
+  position: fixed;
+  bottom: 78px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #10b981;
+  color: #052e16;
+  font-weight: 800;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s ease;
+  z-index: 70;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+#toast-notification.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* OPTIMIZACIÓN MÓVIL SAMSUNG GALAXY A02S (360x800px) */
+@media (max-width: 400px) {
+  body {
+    padding-top: calc(var(--nav-height) + 52px);
+  }
+  main {
+    padding: 10px 8px;
+  }
+  .card {
+    padding: 12px 10px;
+  }
+  .chip {
+    padding: 6px 11px;
+    font-size: 0.82rem;
+  }
+  .btn-open-new-window {
+    min-width: 100%;
+  }
+}
+
+/* HOJA DE ESTILOS DE IMPRESIÓN Y PDF A4 */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 14mm 12mm;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    font-size: 11pt !important;
+  }
+  #reading-progress-container,
+  #top-navigation,
+  #dr,
+  #utility-bar,
+  #search-results-drawer,
+  .draggable-fab,
+  .tab-footer-nav,
+  .copy-btn,
+  .svg-controls-bar,
+  #toast-notification {
+    display: none !important;
+  }
+  .tab-section {
+    display: block !important;
+    opacity: 1 !important;
+    transform: none !important;
+    margin-bottom: 24px !important;
+    page-break-inside: auto;
+  }
+  .card, details.qa-item, .copy-block, .url-card {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #888888 !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+  h1, h2, h3, h4, .byline-highlight, .credits-author-name {
+    color: #000000 !important;
+    background: none !important;
+    -webkit-text-fill-color: #000000 !important;
+  }
+  pre.copy-content {
+    color: #000000 !important;
+    background: #f5f5f5 !important;
+    border: 1px solid #cccccc !important;
+  }
+  .svg-hero-wrapper {
+    max-width: 280px !important;
+    background: #0a0e1a !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    break-inside: avoid;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- BARRA DE PROGRESO DE LECTURA -->
+<div id="reading-progress-container" aria-hidden="true">
+  <div id="reading-progress-bar"></div>
+</div>
+
+<!-- BARRA DE NAVEGACIÓN FIJA CON BOTÓN ☰ ÍNDICE Y PESTAÑAS TEMÁTICAS -->
+<nav id="top-navigation" aria-label="Navegación principal del tutorial">
+  <button class="chip" id="mb" aria-label="Abrir índice" aria-expanded="false">☰ Índice</button>
+  <button class="chip active" data-tab-index="0">INICIO</button>
+  <button class="chip" data-tab-index="1">ECOSISTEMA Y SISTEMA</button>
+  <button class="chip" data-tab-index="2">RUTAS DE IA</button>
+  <button class="chip" data-tab-index="3">METODOLOGÍA Y CASOS</button>
+  <button class="chip" data-tab-index="4">ÉTICA, SEGURIDAD Y CHECKLIST</button>
+  <button class="chip" data-tab-index="5">33 Preguntas (Q&amp;A)</button>
+  <button class="chip" data-tab-index="6">ERRORES</button>
+  <button class="chip" data-tab-index="7">PROMPTS</button>
+  <button class="chip" data-tab-index="8">GLOSARIO Y RESUMEN</button>
+  <button class="chip" data-tab-index="9">FUENTES</button>
+  <button class="chip" data-tab-index="10">CRÉDITOS</button>
+</nav>
+
+<!-- PANEL LATERAL DEL ÍNDICE (#dr) -->
+<div id="dr" role="navigation" aria-label="Índice completo de secciones"></div>
+
+<!-- BARRA DE UTILIDADES: BUSCADOR, TAMAÑO DE FUENTE, TEMA E IMPRESIÓN -->
+<div id="utility-bar">
+  <div class="search-box">
+    <input type="search" id="global-search-input" placeholder="Buscar término (ej. Ghidra, 429, DeepSeek)..." aria-label="Buscar en todo el tutorial">
+    <button type="button" id="clear-search-btn" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">✕</button>
+  </div>
+  <div class="utility-controls">
+    <button type="button" class="tool-btn" id="font-decrease-btn" title="Reducir tamaño de letra" aria-label="Reducir tamaño de letra">A−</button>
+    <button type="button" class="tool-btn" id="font-increase-btn" title="Aumentar tamaño de letra" aria-label="Aumentar tamaño de letra">A+</button>
+    <button type="button" class="tool-btn" id="theme-toggle-btn" title="Cambiar entre modo oscuro y claro" aria-label="Cambiar tema visual">☀/🌙</button>
+    <button type="button" class="tool-btn" id="print-pdf-btn" title="Imprimir o guardar como PDF" aria-label="Imprimir o guardar como PDF">🖨 PDF</button>
+  </div>
+</div>
+
+<!-- CAJÓN DE RESULTADOS DE BÚSQUEDA -->
+<div id="search-results-drawer" role="region" aria-live="polite"></div>
+
+<!-- FUENTE SVG OCULTA ÚNICA (SE EXTRAE Y ELIMINA DEL DOM AL INICIAR) -->
+<div id="svg-master-template-holder" style="display:none;" aria-hidden="true">
+  <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustración animada de la forja de software autónomo con Craft Anything: núcleo de agentes constructores, motor Ghidra, rutas de IA y módulos compilados">
+    <defs>
+      <radialGradient id="IDPREFIX_bgGlow" cx="50%" cy="46%" r="55%">
+        <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.32"/>
+        <stop offset="55%" stop-color="#6366f1" stop-opacity="0.14"/>
+        <stop offset="100%" stop-color="#050814" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="IDPREFIX_coreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#00d4ff"/>
+        <stop offset="50%" stop-color="#38bdf8"/>
+        <stop offset="100%" stop-color="#a855f7"/>
+      </linearGradient>
+      <linearGradient id="IDPREFIX_panelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#1e293b" stop-opacity="0.92"/>
+        <stop offset="100%" stop-color="#0f172a" stop-opacity="0.96"/>
+      </linearGradient>
+      <linearGradient id="IDPREFIX_beamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#00d4ff" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#00d4ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+      </linearGradient>
+      <filter id="IDPREFIX_neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="4" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+      </filter>
+    </defs>
+
+    <!-- Fondo reticular cibernético -->
+    <rect width="400" height="500" fill="#060a14"/>
+    <circle cx="200" cy="235" r="210" fill="url(#IDPREFIX_bgGlow)"/>
+    <g stroke="#1e3a5f" stroke-width="0.6" opacity="0.45">
+      <line x1="0" y1="70" x2="400" y2="70"/><line x1="0" y1="140" x2="400" y2="140"/>
+      <line x1="0" y1="210" x2="400" y2="210"/><line x1="0" y1="280" x2="400" y2="280"/>
+      <line x1="0" y1="350" x2="400" y2="350"/><line x1="0" y1="420" x2="400" y2="420"/>
+      <line x1="65" y1="0" x2="65" y2="500"/><line x1="135" y1="0" x2="135" y2="500"/>
+      <line x1="200" y1="0" x2="200" y2="500"/><line x1="265" y1="0" x2="265" y2="500"/>
+      <line x1="335" y1="0" x2="335" y2="500"/>
+    </g>
+
+    <!-- Cabecera holográfica superior: Las 4 Fases -->
+    <g transform="translate(20, 16)">
+      <rect width="360" height="36" rx="8" fill="url(#IDPREFIX_panelGrad)" stroke="#38bdf8" stroke-width="1"/>
+      <text x="180" y="15" fill="#38bdf8" font-size="8.5" font-family="monospace" font-weight="bold" text-anchor="middle">ARQUITECTURA AUTÓNOMA CRAFT ANYTHING</text>
+      <text x="180" y="28" fill="#10b981" font-size="8" font-family="monospace" text-anchor="middle">1.INVESTIGACIÓN ➔ 2.CONSTRUCCIÓN ➔ 3.VERIFICACIÓN ➔ 4.LISTO</text>
+    </g>
+
+    <!-- Líneas de flujo energético desde las 4 esquinas (4 Rutas de IA) -->
+    <g fill="none" stroke-width="2.2" class="svg-anim-stream">
+      <path d="M 65 110 Q 130 150 165 200" stroke="#10b981"/>
+      <path d="M 335 110 Q 270 150 235 200" stroke="#38bdf8"/>
+      <path d="M 65 375 Q 130 320 165 270" stroke="#f59e0b"/>
+      <path d="M 335 375 Q 270 320 235 270" stroke="#a855f7"/>
+    </g>
+
+    <!-- Anillo exterior giratorio (Ghidra + Motores: Rust, Godot, Unity, Unreal) -->
+    <g class="svg-anim-cw">
+      <circle cx="200" cy="235" r="126" fill="none" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="18 10"/>
+      <circle cx="200" cy="235" r="112" fill="none" stroke="#00d4ff" stroke-width="1.2" stroke-dasharray="6 14" opacity="0.7"/>
+      <circle cx="200" cy="109" r="5" fill="#00d4ff"/>
+      <circle cx="326" cy="235" r="5" fill="#a855f7"/>
+      <circle cx="200" cy="361" r="5" fill="#10b981"/>
+      <circle cx="74" cy="235" r="5" fill="#f59e0b"/>
+    </g>
+
+    <!-- Segundo anillo contrarrotatorio (Harnesses & MCP Protocol) -->
+    <g class="svg-anim-ccw">
+      <circle cx="200" cy="235" r="88" fill="none" stroke="#a855f7" stroke-width="1.8" stroke-dasharray="28 14" opacity="0.8"/>
+      <polygon points="200,138 205,148 195,148" fill="#38bdf8"/>
+      <polygon points="200,332 205,322 195,322" fill="#10b981"/>
+    </g>
+
+    <!-- Núcleo Central Pulsante (El Constructor / Builder) -->
+    <g class="svg-anim-core" filter="url(#IDPREFIX_neonGlow)">
+      <polygon points="200,175 252,205 252,265 200,295 148,265 148,205" fill="url(#IDPREFIX_coreGrad)" opacity="0.25" stroke="#00d4ff" stroke-width="2.5"/>
+      <polygon points="200,190 238,212 238,258 200,280 162,258 162,212" fill="#0f172a" stroke="#38bdf8" stroke-width="1.8"/>
+      <text x="200" y="230" fill="#ffffff" font-size="11" font-family="monospace" font-weight="bold" text-anchor="middle">CRAFT</text>
+      <text x="200" y="244" fill="#00d4ff" font-size="9.5" font-family="monospace" font-weight="bold" text-anchor="middle">BUILDER</text>
+      <text x="200" y="257" fill="#10b981" font-size="7.5" font-family="monospace" text-anchor="middle">MCP + GHIDRA</text>
+    </g>
+
+    <!-- Haz de escaneo vertical de descompilación e inspección -->
+    <g class="svg-anim-scan">
+      <rect x="85" y="230" width="230" height="4" fill="url(#IDPREFIX_beamGrad)"/>
+    </g>
+
+    <!-- Tarjetas satelitales: Las 4 Rutas de Conexión de IA -->
+    <g class="svg-anim-float-1">
+      <rect x="16" y="72" width="115" height="44" rx="7" fill="url(#IDPREFIX_panelGrad)" stroke="#10b981" stroke-width="1.4"/>
+      <circle cx="28" cy="86" r="4" fill="#10b981" class="svg-anim-blink"/>
+      <text x="38" y="89" fill="#10b981" font-size="8.5" font-family="monospace" font-weight="bold">RUTA 01: LOCAL</text>
+      <text x="24" y="104" fill="#cbd5e1" font-size="7.5" font-family="monospace">Ollama / LM Studio</text>
+    </g>
+
+    <g class="svg-anim-float-2">
+      <rect x="269" y="72" width="115" height="44" rx="7" fill="url(#IDPREFIX_panelGrad)" stroke="#38bdf8" stroke-width="1.4"/>
+      <circle cx="281" cy="86" r="4" fill="#38bdf8" class="svg-anim-blink"/>
+      <text x="291" y="89" fill="#38bdf8" font-size="8.5" font-family="monospace" font-weight="bold">RUTA 02: FREE</text>
+      <text x="277" y="104" fill="#cbd5e1" font-size="7.5" font-family="monospace">Groq / FreeLLMAPI</text>
+    </g>
+
+    <g class="svg-anim-float-2">
+      <rect x="16" y="356" width="115" height="44" rx="7" fill="url(#IDPREFIX_panelGrad)" stroke="#f59e0b" stroke-width="1.4"/>
+      <circle cx="28" cy="370" r="4" fill="#f59e0b" class="svg-anim-blink"/>
+      <text x="38" y="373" fill="#f59e0b" font-size="8.5" font-family="monospace" font-weight="bold">RUTA 03: API PRO</text>
+      <text x="24" y="388" fill="#cbd5e1" font-size="7.5" font-family="monospace">DeepSeek V4.1 (0,89 USD)</text>
+    </g>
+
+    <g class="svg-anim-float-1">
+      <rect x="269" y="356" width="115" height="44" rx="7" fill="url(#IDPREFIX_panelGrad)" stroke="#a855f7" stroke-width="1.4"/>
+      <circle cx="281" cy="370" r="4" fill="#a855f7" class="svg-anim-blink"/>
+      <text x="291" y="373" fill="#a855f7" font-size="8.5" font-family="monospace" font-weight="bold">RUTA 04: HARNESS</text>
+      <text x="277" y="388" fill="#cbd5e1" font-size="7.5" font-family="monospace">Claude Code / dsh</text>
+    </g>
+
+    <!-- Consola inferior de proyectos compilados (Lumabi & Pizarra) -->
+    <g transform="translate(18, 418)">
+      <rect width="364" height="66" rx="10" fill="url(#IDPREFIX_panelGrad)" stroke="#1e3a5f" stroke-width="1.5"/>
+      <text x="14" y="19" fill="#00d4ff" font-size="8.5" font-family="monospace" font-weight="bold">&gt; COMPILACIÓN LOCAL SOBERANA ACTIVA [220K+ ★ GITHUB]</text>
+      <text x="14" y="36" fill="#e2e8f0" font-size="8" font-family="monospace">• Caso Loom ➔ «Lumabi» (&lt;50% sim | 2K | 50m | 0,89 USD)</text>
+      <text x="14" y="52" fill="#10b981" font-size="8" font-family="monospace">• Caso Excalidraw ➔ «Pizarra» (93% sim | 85M tok | 1,54 USD)</text>
+    </g>
+  </svg>
+</div>
+
+<main id="tutorial-main-container">
+
+  <!-- =====================================================================
+       PESTAÑA 0: INICIO
+       ===================================================================== -->
+  <section class="tab-section active" id="sec-inicio" data-t="INICIO">
+    <div class="svg-hero-wrapper">
+      <div class="svg-mount-target" id="svg-target-home" role="img" aria-label="Ilustración interactiva animada del ecosistema Craft Anything y sus 4 rutas de inteligencia artificial"></div>
+    </div>
+    <div class="svg-controls-bar">
+      <span>⚡ Motor Vectorial Multicapa Activo</span>
+      <button type="button" class="tool-btn" data-toggle-svg="true">⏸ Pausar/Reanudar SVG</button>
+    </div>
+
+    <div class="badge-row">
+      <span class="badge">Edición Agencia Premium</span>
+      <span class="badge lvl-1">Autodidacta 100%</span>
+      <span class="badge lvl-3">Versión V002</span>
+    </div>
+
+    <h1>Revolución del Software con Craft Anything <span class="byline-highlight">by Rubén Sbarsky</span></h1>
+
+    <p>Este manual técnico y formativo ha sido diseñado de manera exhaustiva para permitir el aprendizaje autónomo y autodidacta de <strong>Craft Anything</strong>. A través de una estructura progresiva y sin presuponer conocimientos implícitos, esta obra interactiva cubre desde los fundamentos históricos del ecosistema <strong>Artcraft</strong> y su arquitectura operativa, hasta la configuración detallada de motores de inteligencia artificial (locales, gratuitos, comerciales y agentes autónomos), metodologías de desarrollo, proyectos prácticos de referencia, solución sistemática de incidencias, un banco de <strong>33 preguntas y respuestas</strong> estructuradas por niveles, un catálogo completo de <strong>prompts</strong> y un directorio verificado de enlaces oficiales.</p>
+
+    <div style="margin: 16px 0;">
+      <button type="button" class="chip" id="ix" style="background: rgba(0, 212, 255, 0.16); border-color: #00d4ff; color: #00d4ff;">☰ Ver índice completo de secciones</button>
+    </div>
+
+    <div class="card card-highlight">
+      <h3>🧭 Secuencia Pedagógica para Principiantes</h3>
+      <p>Para garantizar que cualquier persona pueda crear su propio software funcional desde el primer día, este tutorial aplica la secuencia pedagógica <strong>QUÉ ES → PARA QUÉ SIRVE → POR QUÉ IMPORTA → CÓMO SE HACE → EJEMPLO → PRÁCTICA → ERRORES → RESUMEN</strong>:</p>
+      <ul>
+        <li><strong>¿Qué es Craft Anything?</strong> Una meta-herramienta de código abierto que crea, adapta y reconstruye aplicaciones completas en tu propio ordenador a partir de una dirección web (URL), archivos locales o una idea escrita desde cero.</li>
+        <li><strong>¿Para qué sirve?</strong> Para transformar tus procesos digitales en herramientas modulares reutilizables sin depender de suscripciones abusivas ni plataformas cerradas.</li>
+        <li><strong>¿Por qué importa?</strong> Porque devuelve la soberanía digital al usuario final, permitiéndole ejecutar programas en local con privacidad total o costes de apenas unos céntimos de dólar.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>ÍNDICE MAESTRO JERÁRQUICO Y NUMERADO</h2>
+      <p>Pulsa sobre cualquier bloque temático o usa el botón superior <strong>☰ Índice</strong> para desplazarte instantáneamente:</p>
+      <ol>
+        <li><strong>1. Fundamentos y Filosofía del Ecosistema Artcraft</strong>
+          <ul>
+            <li>1.1. Origen de Artcraft y la ruptura con el modelo de software privativo</li>
+            <li>1.2. Evolución del catálogo abierto: de Photocraft, Wordcraft y Effectcraft a Craft Anything</li>
+            <li>1.3. Reivindicación de la soberanía digital del usuario frente a plataformas cerradas</li>
+            <li>1.4. Principio rector: conversión de procesos digitales en herramientas modulares reutilizables</li>
+          </ul>
+        </li>
+        <li><strong>2. Requisitos del Sistema y Arquitectura Operativa</strong>
+          <ul>
+            <li>2.1. Criterios de hardware según la modalidad de procesamiento (Local vs. Nube)</li>
+            <li>2.2. Entorno de ejecución y permisos del sistema de archivos</li>
+            <li>2.3. Herramientas de análisis profundo y motores auxiliares: Ghidra, Rust, Godot, Unity y Unreal Engine</li>
+          </ul>
+        </li>
+        <li><strong>3. Instalación y Configuración del Entorno de Trabajo</strong>
+          <ul>
+            <li>3.1. Obtención del Launcher unificado e instalación desatendida a un clic</li>
+            <li>3.2. Proceso de bienvenida (<em>onboarding</em>) y configuración selectiva de credenciales</li>
+            <li>3.3. Exploración de la interfaz: el Modo Simple para usuarios sin conocimientos técnicos</li>
+            <li>3.4. Modo Avanzado: entorno de trabajo tipo IDE con trazabilidad total del código</li>
+          </ul>
+        </li>
+        <li><strong>4. Arquitectura de Inteligencia Artificial: Las 4 Rutas de Conexión</strong>
+          <ul>
+            <li>4.1. El principio conceptual rector: Modelo de Lenguaje ≠ Agente de Programación</li>
+            <li>4.2. Ruta 01: Entornos Locales Privados (Ollama y LM Studio)</li>
+            <li>4.3. Ruta 02: Proveedores con Nivel Gratuito y Enrutadores de Cuotas (OpenRouter, Groq, NVIDIA NIM, FreeLLMAPI)</li>
+            <li>4.4. Ruta 03: Proveedores Oficiales de Pago por Consumo (DeepSeek V4.1 / Flash, OpenAI y Anthropic)</li>
+            <li>4.5. Ruta 04: Agentes Ejecutores Autónomos y Harnesses de Construcción (Claude Code, <code>dsh</code>, Copilot CLI, Codex, OpenCode y MCP)</li>
+          </ul>
+        </li>
+        <li><strong>5. Metodología Operativa en 4 Fases de Craft Anything</strong> (Investigación, Construcción, Verificación y Despliegue)</li>
+        <li><strong>6. Procedimientos de Creación y Recreación de Software</strong> (URL, App Existente, Archivos de Videojuegos y Desde Cero)</li>
+        <li><strong>7. Proyectos Integradores del Ecosistema</strong> (Caso Loom / «Lumabi» y Caso Excalidraw / «Pizarra»)</li>
+        <li><strong>8. Marco Ético, Legal y Límites de la Propiedad Intelectual</strong></li>
+        <li><strong>9. Buenas Prácticas de Ingeniería y Supervisión de Software en Fase Alfa (La Regla del 90%)</strong></li>
+        <li><strong>10. Seguridad Operativa y Permisos de Ejecución en el Sistema Local (Alcance de Clean Room)</strong></li>
+        <li><strong>11. Guía Sistemática de Diagnóstico y Resolución de Problemas (Errores 401, 404, 429 y bucles)</strong></li>
+        <li><strong>12. Checklist de Comprobación Previa al Lanzamiento de un Proyecto</strong></li>
+        <li><strong>13. Banco Integral de 33 Preguntas y Respuestas Formativas (Niveles 1, 2 y 3)</strong></li>
+        <li><strong>14. Directorio Exhaustivo de Prompts y Patrones de Instrucción</strong></li>
+        <li><strong>15. Glosario Pedagógico de Conceptos Técnicos</strong></li>
+        <li><strong>16. Directorio de Fuentes Fiables, Endpoints y Documentación Oficial</strong></li>
+      </ol>
+    </div>
+
+    <div class="tab-footer-nav">
+      <span></span>
+      <button type="button" class="nav-step-btn next-btn" onclick="go(1)">Siguiente: Ecosistema y Sistema ➔</button>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       PESTAÑA 1: ECOSISTEMA Y SISTEMA (Secciones 1, 2 y 3)
+       ===================================================================== -->
+  <section class="tab-section" id="sec-ecosistema" data-t="ECOSISTEMA Y SISTEMA">
+    <h2>1. Fundamentos y Filosofía del Ecosistema Artcraft</h2>
+
+    <div class="card">
+      <h3>1.1. Origen de Artcraft y la ruptura con el modelo de software privativo</h3>
+      <p>El ecosistema <strong>Artcraft</strong> tuvo sus primeros pasos a lo largo del año 2025 como un laboratorio de experimentación enfocado en el diseño y la creación visual asistida por modelos de inteligencia artificial. En octubre de 2026, el proyecto adquirió relevancia global tras emprender una iniciativa sin precedentes: la reconstrucción de aplicaciones informáticas profesionales consolidadas en el mercado privativo para liberarlas íntegramente bajo licencias de código abierto.</p>
+      <p>El impulsor y arquitecto de este desarrollo es <strong>Brandon Thomas</strong>, ingeniero de software y realizador audiovisual. El origen del proyecto se cimentó sobre una vivencia personal: tras afrontar trabas administrativas y penalizaciones económicas desproporcionadas al intentar cancelar suscripciones a herramientas comerciales en la nube de Adobe, Thomas decidió canalizar sus conocimientos en construir alternativas de código abierto, ejecutables en local, gratuitas y bajo el control absoluto de los usuarios.</p>
+    </div>
+
+    <div class="card">
+      <h3>1.2. Evolución del catálogo abierto: de Photocraft, Wordcraft y Effectcraft a Craft Anything</h3>
+      <p>Bajo esta filosofía de desarrollo, Artcraft concibió un catálogo de aplicaciones que emulan las capacidades de suites ofimáticas y creativas de referencia:</p>
+      <ul>
+        <li><strong>Photocraft:</strong> alternativa libre y local orientada al retoque fotográfico digital, inspirada en Adobe Photoshop.</li>
+        <li><strong>Wordcraft:</strong> procesador de textos estructurado de código abierto, diseñado como contraparte libre de Microsoft Word.</li>
+        <li><strong>Effectcraft:</strong> suite de animación gráfica y efectos visuales, concebida en la línea funcional de Adobe After Effects.</li>
+        <li><strong>Designcraft:</strong> entorno enfocado al diseño de interfaces y maquetación vectorial.</li>
+        <li>Otras aplicaciones complementarias orientadas a cubrir flujos de trabajo audiovisual análogos a Adobe Premiere o Lightroom.</li>
+      </ul>
+      <p>El ecosistema reúne <strong>más de 15 aplicaciones funcionales de código abierto</strong>, las cuales superan conjuntamente las <strong>220.000 estrellas de valoración</strong> en sus repositorios de GitHub. No obstante, en lugar de continuar creando manualmente cada software específico, Brandon Thomas y su equipo desarrollaron una meta-herramienta: <strong>Craft Anything</strong>, una plataforma automatizada que permite a cualquier usuario recrear o diseñar software funcional sin requerir conocimientos técnicos de programación.</p>
+    </div>
+
+    <div class="card card-highlight">
+      <h3>1.3. Reivindicación de la soberanía digital del usuario frente a plataformas cerradas</h3>
+      <p>El lanzamiento de Craft Anything coincidió en el tiempo con la instauración de políticas restrictivas por parte de entornos de desarrollo comercial como Claude Code, que limitaron la recreación de videojuegos clásicos y herramientas lúdicas. Artcraft posicionó a Craft Anything como un manifiesto técnico en favor de la soberanía del usuario: un entorno donde cualquier creador puede construir las herramientas que necesita para su uso personal con total independencia de decisiones corporativas externas.</p>
+      <h3>1.4. Principio rector: conversión de procesos digitales en herramientas modulares reutilizables</h3>
+      <p>La propuesta central de Craft Anything reside en transformar procesos de trabajo en aplicaciones reutilizables. En lugar de limitarse a copiar la apariencia de una interfaz, el sistema analiza el comportamiento, las dependencias y la lógica operativa de un programa para compilar una solución autónoma, ejecutable dentro de la máquina del usuario, lista para ser modificada o ampliada.</p>
+    </div>
+
+    <h2>2. Requisitos del Sistema y Arquitectura Operativa</h2>
+
+    <div class="card">
+      <h3>2.1. Criterios de hardware según la modalidad de procesamiento (Local vs. Nube)</h3>
+      <p>Para planificar el entorno de trabajo, el usuario debe identificar qué componente asume el esfuerzo de cálculo:</p>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Parámetro Operativo</th>
+              <th>Modalidad Local (Ollama / LM Studio)</th>
+              <th>Modalidad Nube (APIs / Agentes CLI)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Demanda de hardware propio</strong></td>
+              <td>Elevada (requiere tarjeta gráfica dedicada o procesador potente).</td>
+              <td>Mínima (el trabajo matemático ocurre en centros de datos remotos).</td>
+            </tr>
+            <tr>
+              <td><strong>Memoria RAM recomendada</strong></td>
+              <td>16 GB a 32 GB para modelos compactos de programación (7B/8B).</td>
+              <td>8 GB de RAM resultan suficientes para mover la interfaz de usuario.</td>
+            </tr>
+            <tr>
+              <td><strong>Gasto económico por token</strong></td>
+              <td>Totalmente gratuito e ilimitado (coste marginal eléctrico).</td>
+              <td>Variable según el proveedor (desde saldo gratuito hasta céntimos de dólar).</td>
+            </tr>
+            <tr>
+              <td><strong>Privacidad de la información</strong></td>
+              <td>Absoluta: ningún dato ni código sale del equipo local.</td>
+              <td>Sujeta a las directivas de tratamiento de datos del proveedor de API.</td>
+            </tr>
+            <tr>
+              <td><strong>Capacidad en proyectos extensos</strong></td>
+              <td>Condicionada por el tamaño de la ventana de contexto del modelo local.</td>
+              <td>Máxima: los modelos de frontera gestionan bases de código complejas con mayor solidez.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>2.2. Entorno de ejecución y permisos del sistema de archivos</h3>
+      <p>Craft Anything se instala como un programa nativo de escritorio. Requiere permisos ordinarios de lectura y escritura en la carpeta donde el usuario almacena sus proyectos para generar el árbol de directorios, escribir los ficheros de código y descargar las dependencias necesarias.</p>
+      <h3>2.3. Herramientas de análisis profundo y motores auxiliares: Ghidra, Rust, Godot, Unity y Unreal Engine</h3>
+      <p>Desde el menú de configuración de la plataforma (<code>Settings → Engines</code>), el usuario puede instalar extensiones que incrementan la capacidad de deducción de la herramienta:</p>
+      <ul>
+        <li><strong>Ghidra:</strong> suite de análisis de código y descompilación que permite a Craft Anything realizar inspecciones a fondo sobre binarios y aplicaciones web complejas.</li>
+        <li><strong>Rust:</strong> entorno de programación compilado que proporciona estabilidad y seguridad de memoria para herramientas de alto rendimiento.</li>
+        <li><strong>Godot, Unity y Unreal Engine:</strong> motores gráficos esenciales cuando la meta del proyecto implica reconstruir software interactivo, simulaciones o videojuegos.</li>
+      </ul>
+    </div>
+
+    <h2>3. Instalación y Configuración del Entorno de Trabajo</h2>
+
+    <div class="card card-success">
+      <h3>3.1. Procedimiento Guiado: Obtención del Launcher unificado e instalación a un clic</h3>
+      <p><strong>Objetivo:</strong> Instalar el lanzador oficial de Artcraft y activar Craft Anything en tu ordenador.</p>
+      <ol>
+        <li><strong>Accede al portal oficial:</strong> Entra en el sitio web oficial de Artcraft (motivo: obtener siempre el binario verificado).</li>
+        <li><strong>Descarga el instalador general:</strong> Localiza y descarga el paquete unificado llamado <strong>Launcher</strong>.</li>
+        <li><strong>Ejecuta el archivo descargado:</strong> Ábrelo en tu sistema operativo y confirma la carpeta de destino habitual.</li>
+        <li><strong>Abre el catálogo del Launcher:</strong> En pocos segundos verás la lista general de herramientas abiertas disponibles.</li>
+        <li><strong>Instala Craft Anything:</strong> Localiza <strong>Craft Anything</strong> en la lista y presiona el botón <strong>Install</strong>.</li>
+      </ol>
+      <p><strong>Resultado esperado:</strong> En un breve instante la aplicación quedará lista en la sección superior de programas operativos.</p>
+    </div>
+
+    <div class="card">
+      <h3>3.2. Proceso de bienvenida (<em>onboarding</em>) y configuración selectiva de credenciales</h3>
+      <p>Al abrir Craft Anything por primera vez, se desplegará una guía de bienvenida:</p>
+      <ol>
+        <li>Pulsa en <strong>Siguiente</strong> para avanzar por las pantallas descriptivas.</li>
+        <li>La aplicación ofrecerá la posibilidad de introducir credenciales preconfiguradas, como una clave de <strong>Fal AI</strong> para generación de contenido multimedia. <strong>Este paso puede omitirse sin inconveniente alguno</strong>, ya que la conexión con los motores de código se configurará de forma personalizada más adelante.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>3.3. Exploración de la interfaz: el Modo Simple para usuarios sin conocimientos técnicos</h3>
+      <p>Por defecto, la herramienta se presenta en el <strong>Modo Simple</strong>:</p>
+      <ul>
+        <li>La columna lateral izquierda recopila las herramientas instaladas y los desarrollos previos.</li>
+        <li>El área central ofrece un botón de adición (<strong>+</strong>) con un formulario para ingresar una URL web o vincular archivos locales.</li>
+        <li>Un indicador superior refleja el progreso de la generación a través de sus cuatro fases operativas.</li>
+      </ul>
+      <h3>3.4. Modo Avanzado: entorno de trabajo tipo IDE con trazabilidad total del código</h3>
+      <p>Para usuarios que deseen supervisar cada instrucción ejecutada por la inteligencia artificial:</p>
+      <ol>
+        <li>Abre el menú <strong>Settings</strong> y accede a la sección <strong>General</strong>.</li>
+        <li>Cambia el modo de visualización de "Simple" a <strong>"Advanced"</strong>.</li>
+        <li>La ventana cambiará a un formato análogo a entornos de desarrollo como Visual Studio Code, permitiendo examinar el árbol de ficheros en tiempo real, los registros de terminal y las llamadas de las herramientas.</li>
+        <li>Para retornar a la vista simplificada, basta con presionar el selector ubicado en la esquina superior derecha.</li>
+      </ol>
+    </div>
+
+    <div class="tab-footer-nav">
+      <button type="button" class="nav-step-btn" onclick="go(0)">⬅ Anterior: Inicio</button>
+      <button type="button" class="nav-step-btn next-btn" onclick="go(2)">Siguiente: Rutas de IA ➔</button>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       PESTAÑA 2: RUTAS DE IA (Sección 4 Completa)
+       ===================================================================== -->
+  <section class="tab-section" id="sec-rutas-ia" data-t="RUTAS DE IA">
+    <h2>4. Arquitectura de Inteligencia Artificial: Las 4 Rutas de Conexión</h2>
+
+    <div class="card card-warning">
+      <h3>4.1. El principio conceptual rector: Modelo de Lenguaje ≠ Agente de Programación</h3>
+      <p>Para configurar Craft Anything con éxito, es imprescindible distinguir estos dos componentes:</p>
+      <ul>
+        <li><strong>Un modelo de lenguaje puro (vía API o local):</strong> es un sistema entrenado para procesar y producir texto o código en función de un contexto dado. Por sí solo, carece de la facultad de interactuar con el sistema operativo, crear directorios o compilar librerías.</li>
+        <li><strong>Un agente de programación (<em>Harness</em>):</strong> es un programa envolvente que utiliza el modelo de lenguaje como motor de razonamiento, pero dispone de herramientas activas para ejecutar comandos de terminal, escribir ficheros en disco, analizar fallos de compilación y corregir errores de forma autónoma.</li>
+      </ul>
+      <p><strong>Regla de oro de Craft Anything:</strong> Una conexión de API directa o un servidor local resulta adecuado para realizar auditorías, responder preguntas y planificar. Para compilar una aplicación completa y operativa en el disco duro, la vía más contrastada en la documentación oficial consiste en conectar un agente ejecutor con el rol de <strong>Builder</strong> (como Claude Code, DeepSeek Harness o Copilot CLI).</p>
+    </div>
+
+    <!-- RUTA 01 -->
+    <div class="card">
+      <span class="badge lvl-1">RUTA 01</span>
+      <h3>4.2. Entornos Locales Privados (Ollama y LM Studio)</h3>
+      <p>Esta vía ejecuta el procesamiento de la IA dentro de los componentes físicos de su propio equipo, eliminando costes por token y asegurando que ningún dato salga del ordenador.</p>
+
+      <h4>4.2.1. Despliegue paso a paso con Ollama</h4>
+      <p>Ollama es una herramienta ligera para gestionar y servir modelos de código abierto localmente mediante un servidor compatible con la API de OpenAI.</p>
+      <ol>
+        <li>Descargue el instalador oficial desde <code>ollama.com</code> y complete la instalación.</li>
+        <li>Inicie Ollama; el servicio se mantendrá activo en segundo plano en la dirección local compatible con OpenAI:</li>
+      </ol>
+      <div class="copy-block">
+        <div class="copy-header"><span class="copy-label">Endpoint Local Ollama</span><button type="button" class="copy-btn" data-copy-target="cmd-ollama-url">COPIAR</button></div>
+        <pre class="copy-content" id="cmd-ollama-url">http://localhost:11434/v1</pre>
+      </div>
+      <ol start="3">
+        <li>Abra la consola o terminal de su sistema operativo y descargue un modelo especializado en código con soporte para llamadas a funciones:</li>
+      </ol>
+      <div class="copy-block">
+        <div class="copy-header"><span class="copy-label">Terminal — Descargar Qwen2.5-Coder 7B</span><button type="button" class="copy-btn" data-copy-target="cmd-ollama-pull">COPIAR</button></div>
+        <pre class="copy-content" id="cmd-ollama-pull">ollama pull qwen2.5-coder:7b</pre>
+      </div>
+      <ol start="4">
+        <li>Verifique la correcta instalación del modelo ejecutando:</li>
+      </ol>
+      <div class="copy-block">
+        <div class="copy-header"><span class="copy-label">Terminal — Listar Modelos</span><button type="button" class="copy-btn" data-copy-target="cmd-ollama-list">COPIAR</button></div>
+        <pre class="copy-content" id="cmd-ollama-list">ollama list</pre>
+      </div>
+      <ol start="5">
+        <li>En Craft Anything, ingrese a <strong>Settings → AI</strong> y pulse en <strong>Detect</strong>.</li>
+        <li>Si el servidor no es detectado de forma automática, presione <strong>Add an AI</strong> e introduzca los siguientes parámetros manuales:
+          <ul>
+            <li><strong>Nombre:</strong> Ollama Local</li>
+            <li><strong>Dirección URL:</strong> <code>http://localhost:11434/v1</code></li>
+            <li><strong>Modelo:</strong> <code>qwen2.5-coder:7b</code> (o el nombre que figure en su lista local).</li>
+            <li><strong>API Key:</strong> déjela en blanco (los servidores locales no exigen contraseña).</li>
+          </ul>
+        </li>
+      </ol>
+
+      <h4>4.2.2. Despliegue paso a paso con LM Studio</h4>
+      <p>LM Studio proporciona un entorno visual con buscador integrado de modelos y control de servidor.</p>
+      <ol>
+        <li>Instale la aplicación desde <code>lmstudio.ai</code>.</li>
+        <li>Explore el catálogo y descargue un modelo que indique compatibilidad explícita con <em>tool calling</em> (llamada a herramientas).</li>
+        <li>Diríjase a la sección <strong>Developer</strong> de LM Studio y haga clic en <strong>Start server</strong>.</li>
+        <li>La dirección predeterminada de conexión es:</li>
+      </ol>
+      <div class="copy-block">
+        <div class="copy-header"><span class="copy-label">Endpoint Local LM Studio</span><button type="button" class="copy-btn" data-copy-target="cmd-lms-url">COPIAR</button></div>
+        <pre class="copy-content" id="cmd-lms-url">http://localhost:1234/v1</pre>
+      </div>
+      <ol start="5">
+        <li>Compruebe la disponibilidad del servicio ejecutando en su terminal:</li>
+      </ol>
+      <div class="copy-block">
+        <div class="copy-header"><span class="copy-label">Terminal — Verificar Servidor LM Studio con cURL</span><button type="button" class="copy-btn" data-copy-target="cmd-lms-curl">COPIAR</button></div>
+        <pre class="copy-content" id="cmd-lms-curl">curl http://localhost:1234/v1/models</pre>
+      </div>
+      <ol start="6">
+        <li>En Craft Anything, acceda a <strong>Settings → AI → Detect</strong> o añada la URL <code>http://localhost:1234/v1</code>, asegurándose de escribir en el campo de modelo el identificador exacto que muestra LM Studio en su barra superior. Mantenga LM Studio abierto mientras trabaje con Craft Anything.</li>
+      </ol>
+
+      <h4>4.2.3. Rendimiento, consumo de memoria y capacidades reales en hardware doméstico</h4>
+      <p>Los modelos locales compactos (7B u 8B) son excelentes para responder dudas y auditar archivos. Sin embargo, para la generación autónoma de aplicaciones enteras pueden presentar limitaciones de memoria de contexto o perder la trazabilidad en secuencias extensas de comandos. La construcción completa desatendida mediante claves locales directas no estaba plenamente contrastada en vivo por el equipo desarrollador sin la mediación de un agente especializado.</p>
+    </div>
+
+    <!-- RUTA 02 -->
+    <div class="card">
+      <span class="badge lvl-2">RUTA 02</span>
+      <h3>4.3. Proveedores con Nivel Gratuito y Enrutadores de Cuotas</h3>
+      <p>Permite aprovechar recursos de cómputo en la nube sin necesidad de adquirir tarjetas gráficas dedicadas ni realizar pagos iniciales.</p>
+
+      <h4>4.3.1. OpenRouter</h4>
+      <p>OpenRouter centraliza decenas de modelos de IA, ofreciendo una categoría de acceso gratuito.</p>
+      <ul>
+        <li><strong>Endpoint oficial:</strong> <code>https://openrouter.ai/api/v1</code></li>
+        <li><strong>Procedimiento:</strong> Regístrese en su web, genere una clave en el apartado <em>API Keys</em> y conéctela en Craft Anything.</li>
+        <li><strong>Modelos recomendados:</strong> Escoja aquellos cuyo nombre termine con el sufijo <code>:free</code> (por ejemplo, variantes de Qwen o Llama preparadas para código) o utilice la ruta <code>openrouter/free</code>.</li>
+        <li><strong>Restricciones publicadas:</strong> Suelen admitir 20 peticiones por minuto y 50 consultas diarias en las variantes gratuitas. Pueden experimentar rechazos por saturación en momentos de alta demanda.</li>
+      </ul>
+
+      <h4>4.3.2. Groq Cloud</h4>
+      <p>Groq procesa inferencias a gran velocidad mediante procesadores de arquitectura LPU.</p>
+      <ul>
+        <li><strong>Endpoint oficial:</strong> <code>https://api.groq.com/openai/v1</code></li>
+        <li><strong>Consola de gestión:</strong> <code>console.groq.com</code></li>
+        <li><strong>Procedimiento:</strong> Obtenga su credencial en la consola. Al configurar el modelo en Craft Anything, compruebe que admita <em>function/tool calling</em>; de lo contrario, la IA solo emitirá texto descriptivo sin interactuar con los archivos.</li>
+      </ul>
+
+      <h4>4.3.3. NVIDIA NIM</h4>
+      <p>NVIDIA ofrece acceso a microservicios optimizados para desarrollo y experimentación.</p>
+      <ul>
+        <li><strong>Endpoint oficial:</strong> <code>https://integrate.api.nvidia.com/v1</code></li>
+        <li><strong>Registro de desarrolladores:</strong> <code>build.nvidia.com</code></li>
+        <li><strong>Procedimiento:</strong> Seleccione un modelo que soporte chat y llamadas a herramientas, genere la clave e intégrelo en Craft Anything mediante el formulario compatible con OpenAI.</li>
+      </ul>
+
+      <h4>4.3.4. FreeLLMAPI: Enrutador local de cuotas gratuitas</h4>
+      <p>FreeLLMAPI es un programa de código abierto que se ejecuta en su máquina para combinar múltiples claves gratuitas.</p>
+      <ul>
+        <li><strong>Panel de administración:</strong> <code>http://localhost:3001</code></li>
+        <li><strong>URL de conexión para Craft Anything:</strong> <code>http://localhost:3001/v1</code></li>
+        <li><strong>Funcionamiento:</strong> Agrupa claves gratuitas de diversos servicios en una sola dirección unificada. Si una cuenta agota sus peticiones, el enrutador conmuta a la siguiente clave disponible, permitiendo gestionar <strong>más de 7.000 millones de tokens gratuitos al mes</strong> para pruebas de desarrollo.</li>
+      </ul>
+    </div>
+
+    <!-- RUTA 03 -->
+    <div class="card">
+      <span class="badge">RUTA 03</span>
+      <h3>4.4. Proveedores Oficiales de Pago por Consumo</h3>
+      <p>Para quienes priorizan estabilidad y consistencia técnica pagando únicamente por los recursos exactos utilizados.</p>
+
+      <h4>4.4.1. DeepSeek: configuración de V4.1 y DeepSeek Flash</h4>
+      <p>DeepSeek es la opción de referencia más destacada en las pruebas del ecosistema gracias a su excepcional relación calidad-precio.</p>
+      <ul>
+        <li><strong>Portal de desarrollo:</strong> <code>platform.deepseek.com</code></li>
+        <li><strong>Endpoint oficial:</strong> <code>https://api.deepseek.com</code></li>
+      </ul>
+      <p><strong>Procedimiento paso a paso:</strong></p>
+      <ol>
+        <li>Cree su cuenta en la plataforma oficial y añada un saldo mínimo de recarga (ej. 2 a 5 dólares).</li>
+        <li>En la sección <em>API Keys</em>, pulse en <em>Create new API key</em>, asigne un nombre y copie la clave.</li>
+        <li>En Craft Anything, abra <strong>Settings → AI → Add an AI</strong>.</li>
+        <li>Complete los datos:
+          <ul>
+            <li><strong>Nombre del proveedor:</strong> DeepSeek</li>
+            <li><strong>URL:</strong> <code>https://api.deepseek.com</code></li>
+            <li><strong>Modelo:</strong> seleccione la versión recomendada (como <code>deepseek-chat</code>, DeepSeek V4.1 o variantes de alta velocidad como <code>DeepSeek Flash</code>).</li>
+            <li><strong>Clave API:</strong> pegue su clave generada.</li>
+          </ul>
+        </li>
+        <li>Haga clic en <strong>Agregar</strong>.</li>
+      </ol>
+
+      <h4>4.4.2. OpenAI y Anthropic: gestión de claves directas y suscripciones web</h4>
+      <p>Es fundamental evitar la confusión habitual entre servicios al consumidor y entornos para desarrolladores:</p>
+      <ul>
+        <li>Tener contratado ChatGPT Plus/Pro o Claude Pro <strong>no otorga saldo para peticiones de API</strong>.</li>
+        <li>Las claves de API se generan en <code>platform.openai.com</code> y <code>console.anthropic.com</code>, donde el consumo se factura de forma independiente según el volumen de tokens procesados.</li>
+      </ul>
+    </div>
+
+    <!-- RUTA 04 -->
+    <div class="card card-highlight">
+      <span class="badge lvl-3">RUTA 04</span>
+      <h3>4.5. Agentes Ejecutores Autónomos y Harnesses de Construcción</h3>
+      <p>Representa la metodología más robusta y eficaz para materializar proyectos completos de software funcional.</p>
+
+      <h4>4.5.1. Definición técnica de Harness y asignación del rol de constructor (<em>Builder</em>)</h4>
+      <p>Un Harness es un programa autónomo que actúa como un desarrollador en su terminal: toma los requerimientos de la tarea, diseña la estructura del proyecto, escribe el código fuente, ejecuta las órdenes de compilación y supervisa los resultados. En Craft Anything se configuran asignándoles el rol de <strong>Builder</strong>.</p>
+
+      <h4>4.5.2. Conexión de Claude Code CLI, DeepSeek Harness (<code>dsh</code>) y GitHub Copilot CLI</h4>
+      <p>La plataforma permite vincular los agentes de consola instalados en su ordenador:</p>
+      <ul>
+        <li><strong>Claude Code:</strong> herramienta de referencia con capacidad de construcción real plenamente contrastada. Utiliza la sesión iniciada previamente en su terminal con el comando <code>claude</code>.</li>
+        <li><strong>DeepSeek Harness (<code>dsh</code>):</strong> ejecutor diseñado para interactuar con la infraestructura de DeepSeek con soporte de construcción en disco.</li>
+        <li><strong>GitHub Copilot CLI:</strong> integración basada en el protocolo ACP, autenticada mediante <code>copilot login</code>.</li>
+        <li><strong>Procedimiento:</strong> Acceda a <strong>Settings → AI → Detect</strong>, presione <strong>Add</strong> sobre el agente localizado y elíjalo como ejecutor (<em>Builder</em>) al crear sus proyectos.</li>
+      </ul>
+
+      <h4>4.5.3. Adaptadores en proceso de integración: Codex y OpenCode</h4>
+      <p>Herramientas como Codex (<code>codex exec</code> con <code>codex login</code>) y OpenCode figuran en el ecosistema con soporte de descubrimiento e integración, si bien en las fuentes técnicas su validación completa en compilaciones de cuentas reales se encontraba en fase de pruebas continuas.</p>
+
+      <h4>4.5.4. Integración avanzada mediante Model Context Protocol (MCP) y comandos de terminal</h4>
+      <p>Craft Anything dispone de un servidor MCP que permite a agentes externos controlar las herramientas de la plataforma:</p>
+      <div class="copy-block">
+        <div class="copy-header"><span class="copy-label">Comandos CLI del Servidor MCP</span><button type="button" class="copy-btn" data-copy-target="cmd-mcp-cli">COPIAR</button></div>
+        <pre class="copy-content" id="cmd-mcp-cli"># Configurar y enlazar clientes compatibles en su sistema
+craft-anything-cli setup
+
+# Arrancar el servidor MCP para exponer las herramientas de análisis
+craft-anything-cli mcp
+
+# Ejecutar el servidor con restricciones para limitar operaciones sensibles
+craft-anything-cli mcp --restricted</pre>
+      </div>
+    </div>
+
+    <div class="tab-footer-nav">
+      <button type="button" class="nav-step-btn" onclick="go(1)">⬅ Anterior: Ecosistema y Sistema</button>
+      <button type="button" class="nav-step-btn next-btn" onclick="go(3)">Siguiente: Metodología y Casos ➔</button>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       PESTAÑA 3: METODOLOGÍA Y CASOS (Secciones 5, 6 y 7)
+       ===================================================================== -->
+  <section class="tab-section" id="sec-metodologia" data-t="METODOLOGÍA Y CASOS">
+    <h2>5. Metodología Operativa en 4 Fases de Craft Anything</h2>
+
+    <div class="card">
+      <p>Al iniciar un desarrollo mediante el botón <strong>Start</strong>, la herramienta activa un flujo estructurado de cuatro fases sucesivas:</p>
+      <div class="copy-block">
+        <div class="copy-header"><span class="copy-label">Diagrama de Flujo Operativo en 4 Fases</span><button type="button" class="copy-btn" data-copy-target="diag-4fases">COPIAR</button></div>
+        <pre class="copy-content" id="diag-4fases">┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│     FASE 1      │ ──&gt; │     FASE 2      │ ──&gt; │     FASE 3      │ ──&gt; │     FASE 4      │
+│  INVESTIGACIÓN  │     │  CONSTRUCCIÓN   │     │  VERIFICACIÓN   │     │ LISTO / ENTREGA │
+└─────────────────┘     └─────────────────┘     └─────────────────┘     └─────────────────┘
+  - Rastreo de URL        - Diseño modular        - Análisis sintáctico   - Servidor local
+  - Auditoría Ghidra      - Escritura de código   - Pruebas de enlaces    - Acceso web listo</pre>
+      </div>
+      <ol>
+        <li><strong>5.1. Fase 1 — Investigación:</strong> Rastreo de la dirección web o examen de los ficheros de origen. En modo profundo, emplea motores como Ghidra para analizar la estructura lógica, las llamadas y la arquitectura subyacente.</li>
+        <li><strong>5.2. Fase 2 — Construcción:</strong> Planificación del proyecto, creación del árbol de carpetas y generación del código fuente (HTML, JavaScript, estilos, módulos de servidor).</li>
+        <li><strong>5.3. Fase 3 — Verificación:</strong> Inspección algorítmica de la coherencia del código, validación de librerías y comprobación de errores inmediatos de ejecución.</li>
+        <li><strong>5.4. Fase 4 — Listo / Despliegue:</strong> Puesta en marcha de un servidor web local y entrega de un enlace accesible desde el navegador para interactuar con el software creado.</li>
+      </ol>
+    </div>
+
+    <h2>6. Procedimientos de Creación y Recreación de Software</h2>
+    <div class="card">
+      <p>El sistema proporciona cuatro puntos de entrada en su pantalla principal:</p>
+      <ol>
+        <li><strong>6.1. Desde un sitio web (Website):</strong> Se introduce una URL pública. La plataforma inspecciona los elementos interactivos visibles y genera una versión local.</li>
+        <li><strong>6.2. Desde una aplicación existente (Existing App):</strong> Permite cargar un proyecto previo de su disco duro para auditarlo, corregir errores o incorporar nuevas funciones modulares.</li>
+        <li><strong>6.3. Desde archivos de videojuegos (Game Files):</strong> Analiza paquetes interactivos asistido por motores como Godot, Unity o Unreal Engine.</li>
+        <li><strong>6.4. Desde cero (From Scratch):</strong> Generación de herramientas basadas en requerimientos y prompts conceptuales sin tomar referencias de software previo.</li>
+      </ol>
+    </div>
+
+    <h2>7. Proyectos Integradores del Ecosistema</h2>
+    <p>A continuación se detallan los dos proyectos integradores contrastados en las fuentes técnicas oficiales, analizando su implementación paso a paso.</p>
+
+    <!-- PROYECTO INTEGRADOR 1 -->
+    <div class="card card-highlight">
+      <span class="badge lvl-2">PROYECTO INTEGRADOR 1</span>
+      <h3>7.1. Recreación Funcional Controlada (Caso Loom / «Lumabi»)</h3>
+
+      <h4>7.1.1. Identificación de la necesidad: superación de barreras en planes comerciales</h4>
+      <p>Loom es un servicio comercial para grabación ágil de pantalla, cámara y voz. Sus planes gratuitos restringen la duración a vídeos de máximo 5 minutos. El reto radicaba en crear una herramienta propia, de uso ilimitado, privada y local.</p>
+
+      <h4>7.1.2. Parámetros del proyecto: similitud menor al 50% e inspección con Ghidra</h4>
+      <ul>
+        <li><strong>Entrada:</strong> URL pública de la plataforma Loom.</li>
+        <li><strong>Modelo asignado:</strong> DeepSeek Versión 4.1.</li>
+        <li><strong>Profundidad:</strong> Modo de investigación profunda activado con el motor Ghidra.</li>
+        <li><strong>Directiva de diseño:</strong> Similitud gráfica limitada estrictamente a menos del 50% para evitar réplicas estéticas idénticas, asignando el nombre original <strong>«Lumabi»</strong>.</li>
+      </ul>
+
+      <h4>7.1.3. Métricas de entrega: porcentajes de semejanza estructural por componente</h4>
+      <p>Tras 50 minutos de análisis y compilación desatendida, Craft Anything presentó el informe de similitud:</p>
+      <ul>
+        <li><strong>Página de inicio (Home):</strong> 32% de similitud.</li>
+        <li><strong>Página corporativa (Enterprise):</strong> 31% de similitud.</li>
+        <li><strong>Página de planes (Pricing):</strong> 40% de similitud.</li>
+        <li><strong>Módulos de autenticación (Login/Register):</strong> mayor coincidencia funcional estructural.</li>
+      </ul>
+
+      <h4>7.1.4. Validación operativa: grabación de pantalla, visor de cámara, audio y exportador</h4>
+      <p>Al presionar sobre <em>Abrir sitio web</em>, la aplicación local permitió:</p>
+      <ol>
+        <li>Conceder permisos de hardware para pantalla completa, cámara web y micrófono en el panel de configuración.</li>
+        <li>Iniciar la grabación observando el visor flotante del usuario sobre la pantalla.</li>
+        <li>Detener la captura y previsualizar de inmediato el vídeo procesado en un reproductor nativo.</li>
+        <li>Recortar el inicio y fin del metraje mediante un control temporal integrado.</li>
+        <li>Exportar el archivo final a la memoria del ordenador sin marcas de agua ni límites temporales.</li>
+      </ol>
+
+      <h4>7.1.5. Iteración modular: redimensionamiento de cámara, posiciones y resolución 2K</h4>
+      <p>Posteriormente se solicitó ampliar el software ya generado:</p>
+      <ul>
+        <li>Incorporar selector de resolución hasta calidad 2K nativa.</li>
+        <li>Añadir selector de tamaño del visor facial (pequeño, mediano y grande).</li>
+        <li>Permitir reubicar la cámara en pantalla (izquierda, derecha y esquinas inferiores).</li>
+        <li>Posibilitar el cambio de marco geométrico (forma circular o rectangular).</li>
+      </ul>
+      <p>La IA aplicó con éxito todas las opciones sobre el código previo en escasos minutos.</p>
+
+      <h4>7.1.6. Análisis de tiempos de ejecución y costes económicos</h4>
+      <ul>
+        <li><strong>Fase inicial de generación (50 minutos):</strong> 0,69 USD.</li>
+        <li><strong>Fase de iteración modular (pocos minutos):</strong> 0,20 USD.</li>
+        <li><strong>Coste global del software funcional:</strong> <strong>0,89 USD</strong> (0,69 + 0,20 = 0,89 USD).</li>
+      </ul>
+    </div>
+
+    <!-- PROYECTO INTEGRADOR 2 -->
+    <div class="card card-success">
+      <span class="badge lvl-3">PROYECTO INTEGRADOR 2</span>
+      <h3>7.2. Replicación de Alta Fidelidad (Caso Excalidraw / «Pizarra»)</h3>
+
+      <h4>7.2.1. Objetivo técnico: lienzo de dibujo vectorial interactivo con similitud mayor al 90%</h4>
+      <p>Excalidraw es un reconocido lienzo de dibujo y esquematización. El objetivo consistió en generar una alternativa local con una <strong>similitud superior al 90%</strong>, capaz de funcionar sin servidores remotos.</p>
+
+      <h4>7.2.2. Monitorización del flujo: 85 millones de tokens procesados y tiempo de compilación</h4>
+      <ul>
+        <li><strong>Modelo utilizado:</strong> DeepSeek Versión 4.1.</li>
+        <li><strong>Tiempo de compilación:</strong> 1 hora y 20 minutos (80 minutos) de procesamiento ininterrumpido.</li>
+        <li><strong>Cálculo de tokens:</strong> aproximadamente <strong>85 millones de tokens</strong> consumidos.</li>
+        <li><strong>Resultado de semejanza:</strong> <strong>93%</strong> de fidelidad respecto a la herramienta de referencia.</li>
+        <li><strong>Identificador generado:</strong> «Pizarra».</li>
+      </ul>
+
+      <h4>7.2.3. Auditoría de herramientas: trazo libre, geometrías, herramienta de mano y PDF</h4>
+      <p>La aplicación entregada incluyó de forma plenamente funcional:</p>
+      <ul>
+        <li>Trazo libre fluido a mano alzada.</li>
+        <li>Formas geométricas elementales (rectángulos, círculos, líneas rectas).</li>
+        <li>Flechas de enlace y diagramación dinámica.</li>
+        <li>Herramienta de selección para mover y escalar elementos sobre el lienzo.</li>
+        <li>Herramienta de mano (<em>hand tool</em>) para navegación panorámica por el área de trabajo.</li>
+        <li>Opciones de exportación del documento resultante en formato PDF e imágenes vectoriales.</li>
+      </ul>
+
+      <h4>7.2.4. Evaluación del coste total de la generación</h4>
+      <p>A pesar del volumen masivo de 85 millones de tokens procesados durante 80 minutos de cómputo, el coste total facturado ascendió únicamente a <strong>1,54 USD</strong>, evidenciando la viabilidad de producir aplicaciones de alta complejidad con presupuestos mínimos.</p>
+    </div>
+
+    <div class="tab-footer-nav">
+      <button type="button" class="nav-step-btn" onclick="go(2)">⬅ Anterior: Rutas de IA</button>
+      <button type="button" class="nav-step-btn next-btn" onclick="go(4)">Siguiente: Ética, Seguridad y Checklist ➔</button>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       PESTAÑA 4: ÉTICA, SEGURIDAD Y CHECKLIST (Secciones 8, 9, 10 y 12)
+       ===================================================================== -->
+  <section class="tab-section" id="sec-etica-seguridad" data-t="ÉTICA, SEGURIDAD Y CHECKLIST">
+    <h2>8. Marco Ético, Legal y Límites de la Propiedad Intelectual</h2>
+    <div class="card">
+      <h3>8.1. Diferenciación técnica entre inspiración funcional y duplicación indebida de código</h3>
+      <p>Analizar la lógica y funcionamiento de una aplicación para comprender sus procesos o crear herramientas personales es una práctica legítima. No obstante, extraer código propietario protegido, apropiarse de marcas registradas o duplicar logotipos y elementos con derechos de autor vulnera la legislación vigente.</p>
+      <h3>8.2. Prohibición de comercialización de copias directas y protección de marcas comerciales</h3>
+      <p>Bajo ningún concepto se puede comercializar o lucrar con una aplicación que sea un clon idéntico de un producto del mercado. Para cualquier iniciativa comercial, es obligatorio desarrollar una identidad corporativa propia, introducir cambios sustanciales en la experiencia de usuario y aportar valor técnico diferenciado.</p>
+      <h3>8.3. El principio de simetría en el desarrollo asistido por inteligencia artificial</h3>
+      <p>Todo creador que utilice estas metodologías debe interiorizar una máxima del ecosistema: <em>"Cualquier aplicación de la que te inspires hoy para programar podrá ser recreada de la misma manera por otro usuario mañana"</em>. El valor duradero no reside en el código estático, sino en el servicio, la constante evolución y la atención cercana al usuario final.</p>
+    </div>
+
+    <h2>9. Buenas Prácticas de Ingeniería y Supervisión de Software en Fase Alfa</h2>
+    <div class="card card-warning">
+      <h3>9.1. La Regla del 90%: comprensión de la brecha entre estética visual y operatividad real</h3>
+      <p>Un indicador de similitud gráfica superior al 90% <strong>no certifica</strong> que la herramienta funcione. Es habitual encontrar interfaces cuyos botones se muestran perfectamente renderizados pero carecen de funciones asignadas en el código subyacente.</p>
+      <h3>9.2. Protocolo de pruebas activas: validación de botones, almacenamiento y periféricos</h3>
+      <p>El usuario debe verificar metódicamente:</p>
+      <ol>
+        <li>Accionar todos los botones y menús para constatar que ejecutan la respuesta esperada.</li>
+        <li>Validar el almacenamiento de datos (crear un elemento, recargar la página y constatar su persistencia).</li>
+        <li>Evaluar los permisos de hardware (micrófono, cámara web o acceso al sistema de archivos).</li>
+      </ol>
+      <h3>9.3. Gestión del contexto de la IA y aislamiento de errores en vistas atómicas</h3>
+      <p>Cuando el proceso de desarrollo presente fallos o entre en contradicciones de diseño, la práctica recomendada consiste en <strong>restringir el alcance a una única pantalla</strong>, facilitar capturas de referencia bien definidas y separar de manera taxativa las comprobaciones de diseño visual de la validación de la lógica funcional.</p>
+    </div>
+
+    <h2>10. Seguridad Operativa y Permisos de Ejecución en el Sistema Local</h2>
+    <div class="card card-danger">
+      <h3>10.1. Supervisión de las acciones de agentes autónomos en el sistema operativo local</h3>
+      <p>Un agente de programación dotado de rol de constructor (<em>Builder</em>) opera con los permisos asignados a su sesión de usuario en el ordenador. Por ello, tiene capacidad para modificar archivos o instalar dependencias. Conviene supervisar las carpetas de trabajo y evitar ejecutar agentes en entornos desatendidos con privilegios de administrador del sistema.</p>
+      <h3>10.2. Alcance real del modo Clean Room: consideraciones de aislamiento</h3>
+      <p>La documentación oficial de Craft Anything recalca un aviso esencial: <strong>el modo Clean Room es una convención interna de desarrollo y gestión de archivos, pero no constituye una caja de arena (<em>sandbox</em>) estricta del sistema operativo</strong>. El usuario debe revisar periódicamente las carpetas de destino y las órdenes ejecutadas.</p>
+      <h3>10.3. Configuración segura de servicios y enrutadores en redes locales</h3>
+      <p>Si instala pasarelas locales como FreeLLMAPI (puerto <code>3001</code>) o servidores locales como Ollama (puerto <code>11434</code>) o LM Studio (puerto <code>1234</code>), mantenga estos servicios restringidos al entorno de su máquina (<em>localhost</em> / <code>127.0.0.1</code>) y evite exponerlos a redes públicas o compartidas sin los mecanismos de control correspondientes.</p>
+    </div>
+
+    <h2>12. Checklist de Comprobación Previa al Lanzamiento de un Proyecto</h2>
+    <p>Antes de pulsar <strong>Start</strong> para compilar cualquier aplicación en Craft Anything, marca cada verificación (tu progreso se guarda automáticamente en el navegador):</p>
+
+    <div id="interactive-checklist-container">
+      <label class="checklist-item" data-check-id="chk-1">
+        <input type="checkbox">
+        <span><strong>Software al día:</strong> Craft Anything se encuentra en su versión más reciente y abre con normalidad el menú <code>Settings → AI</code>.</span>
+      </label>
+      <label class="checklist-item" data-check-id="chk-2">
+        <input type="checkbox">
+        <span><strong>Ruta técnica elegida:</strong> Ha determinado conscientemente la arquitectura a utilizar (Local, Nivel Gratuito, API Oficial o Agente Harness).</span>
+      </label>
+      <label class="checklist-item" data-check-id="chk-3">
+        <input type="checkbox">
+        <span><strong>Credenciales y URL contrastadas:</strong> La clave API se encuentra activa y la URL base coincide fielmente con las direcciones de la documentación.</span>
+      </label>
+      <label class="checklist-item" data-check-id="chk-4">
+        <input type="checkbox">
+        <span><strong>Capacidad de ejecución confirmada:</strong> Si persigue generar código físico en disco, el modelo admite <em>tool calling</em> o se ha vinculado un agente con rol de <em>Builder</em>.</span>
+      </label>
+      <label class="checklist-item" data-check-id="chk-5">
+        <input type="checkbox">
+        <span><strong>Presupuesto y cuotas claros:</strong> Conoce los límites de consumo y ha estimado el gasto o volumen potencial de tokens de la tarea.</span>
+      </label>
+      <label class="checklist-item" data-check-id="chk-6">
+        <input type="checkbox">
+        <span><strong>Protocolo de verificación activo:</strong> Tiene previsto validar la aplicación mediante pruebas operativas reales (botones, flujos de datos, exportaciones) y no basándose únicamente en capturas estéticas.</span>
+      </label>
+    </div>
+
+    <div class="tab-footer-nav">
+      <button type="button" class="nav-step-btn" onclick="go(3)">⬅ Anterior: Metodología y Casos</button>
+      <button type="button" class="nav-step-btn next-btn" onclick="go(5)">Siguiente: 33 Preguntas (Q&amp;A) ➔</button>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       PESTAÑA 5: 33 Preguntas (Q&A) — ANTES DE LA PESTAÑA ERRORES
+       ===================================================================== -->
+  <section class="tab-section" id="sec-preguntas" data-t="33 Preguntas (Q&A)">
+    <h2>13. Banco Integral de 33 Preguntas y Respuestas Formativas</h2>
+    <p>Explora las <strong>33 preguntas y respuestas oficiales</strong> ordenadas por dificultad progresiva: <strong>Nivel 1 (Básico)</strong>, <strong>Nivel 2 (Avanzado)</strong> y <strong>Nivel 3 (Profesional / PRO)</strong>.</p>
+
+    <div class="badge-row">
+      <button type="button" class="tool-btn" id="expand-all-qa-btn">➕ Expandir las 33 respuestas</button>
+      <button type="button" class="tool-btn" id="collapse-all-qa-btn">➖ Contraer todas</button>
+    </div>
+
+    <!-- NIVEL 1 -->
+    <h3>13.1. NIVEL 1 — Nivel Básico (Preguntas 1 a 11)</h3>
+
+    <details class="qa-item" open>
+      <summary><span><span class="badge lvl-1">Nivel 1</span> 1. ¿Qué es exactamente Craft Anything?</span></summary>
+      <div class="qa-body">Es una tecnología de código abierto desarrollada en el ecosistema Artcraft que permite generar, adaptar y recrear software, páginas web y aplicaciones interactivas de manera local y autónoma a partir de una URL, archivos locales o especificaciones conceptuales, sin exigir conocimientos de programación.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-1">Nivel 1</span> 2. ¿Quién es el creador de este proyecto y qué motivó su aparición?</span></summary>
+      <div class="qa-body">Fue creado por Brandon Thomas, ingeniero de software y realizador audiovisual. Su motivación nació tras sufrir penalizaciones contractuales y costes abusivos al cancelar servicios en la nube de Adobe, lo que le impulsó a construir alternativas abiertas, locales y gratuitas.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-1">Nivel 1</span> 3. ¿Qué otros desarrollos integran la suite abierta de Artcraft?</span></summary>
+      <div class="qa-body">Comprende programas como Photocraft (alternativa a Photoshop), Wordcraft (procesador de textos inspirado en Word), Effectcraft (animación gráfica tipo After Effects) y Designcraft, totalizando más de 15 proyectos libres con más de 220.000 estrellas en GitHub.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-1">Nivel 1</span> 4. ¿En qué se diferencian el Modo Simple y el Modo Avanzado?</span></summary>
+      <div class="qa-body">El Modo Simple ofrece una interfaz ágil pensada para principiantes, centrada en un formulario básico y barras de estado. El Modo Avanzado adopta un entorno similar a Visual Studio Code, permitiendo inspeccionar la consola de ejecución, el árbol de archivos y el código en tiempo real.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-1">Nivel 1</span> 5. ¿Es obligatorio pagar para utilizar Craft Anything por primera vez?</span></summary>
+      <div class="qa-body">No. La plataforma se descarga libremente y puede operar sin coste mediante modelos ejecutados en el propio equipo (Ollama, LM Studio) o mediante proveedores con saldo gratuito (como OpenRouter con modelos <code>:free</code> o Groq Cloud).</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-1">Nivel 1</span> 6. ¿Cuáles son las cuatro etapas del ciclo de creación en Craft Anything?</span></summary>
+      <div class="qa-body">Investigación (inspección de la web o archivos fuente), Construcción (escritura del código y carpetas del proyecto), Verificación (comprobación algorítmica de sintaxis y dependencias) y Listo/Despliegue (arranque del servidor web local para su uso).</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-1">Nivel 1</span> 7. ¿Es factible reconstruir una aplicación únicamente indicando su dirección web?</span></summary>
+      <div class="qa-body">Sí. Al elegir la modalidad <em>Website</em> e ingresar una URL pública, Craft Anything examina la disposición visual y el comportamiento del sitio para generar una versión equivalente local.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-1">Nivel 1</span> 8. ¿Qué ventaja representa que el software sea ejecutable en local?</span></summary>
+      <div class="qa-body">Que la aplicación funciona íntegramente en la memoria y disco del propio ordenador, garantizando privacidad de datos, autonomía operativa y ausencia de dependencia respecto a servidores en la nube de terceros.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-1">Nivel 1</span> 9. ¿Disponer de una cuenta ChatGPT Plus o Claude Pro incluye acceso a sus APIs?</span></summary>
+      <div class="qa-body">No. Las suscripciones web para consumidores no otorgan saldo en las APIs de desarrollo. El acceso a las APIs se gestiona y factura de manera independiente en sus portales técnicos (<code>platform.openai.com</code> y <code>console.anthropic.com</code>).</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-1">Nivel 1</span> 10. ¿Qué utilidad tiene el motor Ghidra dentro de la plataforma?</span></summary>
+      <div class="qa-body">Es una herramienta especializada en análisis y descompilación de código. Se instala desde <code>Settings → Engines</code> para permitir a Craft Anything realizar análisis exhaustivos sobre la estructura de binarios y aplicaciones web complejas.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-1">Nivel 1</span> 11. ¿Por qué se aconseja omitir la clave de Fal AI durante la configuración inicial?</span></summary>
+      <div class="qa-body">Porque Fal AI es un servicio externo enfocado en la generación de recursos multimedia que no resulta necesario para el núcleo de desarrollo de software; el motor de IA principal se conecta de forma personalizada en el menú de ajustes.</div>
+    </details>
+
+    <!-- NIVEL 2 -->
+    <h3>13.2. NIVEL 2 — Nivel Avanzado (Preguntas 12 a 22)</h3>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 12. ¿Cuál es la diferencia conceptual entre un modelo de lenguaje y un agente (Harness)?</span></summary>
+      <div class="qa-body">Un modelo de lenguaje genera respuestas de texto basadas en probabilidades estadísticas. Un agente o Harness es un sistema ejecutor que utiliza el modelo para razonar, pero dispone de capacidad operativa para ejecutar comandos de terminal, escribir archivos físicos en el disco y validar compilaciones.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 13. ¿Por qué una clave de API directa puede responder consultas pero no crear ficheros?</span></summary>
+      <div class="qa-body">Porque muchas conexiones de API genéricas no tienen habilitado el protocolo de llamadas a herramientas (<em>tool calling</em>) o no están vinculadas a un agente con rol de constructor (<em>Builder</em>). Para generar proyectos en disco se recomienda recurrir a ejecutores como Claude Code, DeepSeek Harness (<code>dsh</code>) o Copilot CLI.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 14. ¿Cuáles son los pasos para enlazar un modelo local con Ollama en Craft Anything?</span></summary>
+      <div class="qa-body">Instalar Ollama desde <code>ollama.com</code>, descargar un modelo de programación mediante <code>ollama pull qwen2.5-coder:7b</code>, y en Craft Anything añadir en <code>Settings → AI → Add an AI</code> la URL <code>http://localhost:11434/v1</code> con el nombre exacto del modelo, dejando el campo de la clave API en blanco.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 15. ¿Cómo se comprueba que el servidor de LM Studio está emitiendo correctamente?</span></summary>
+      <div class="qa-body">Abriendo la consola de comandos del sistema operativo y ejecutando <code>curl http://localhost:1234/v1/models</code>. Si el servicio responde con una estructura JSON conteniendo los identificadores de los modelos activos, la conexión está lista.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 16. ¿Qué restricciones presentan los modelos locales compactos respecto a la nube?</span></summary>
+      <div class="qa-body">Los modelos locales pequeños (7B/8B) dependen del hardware del usuario y presentan ventanas de contexto más reducidas, lo que puede provocar pérdida de coherencia o fallos en el formateo de herramientas durante proyectos extensos en comparación con los modelos de frontera remotos.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 17. ¿Cómo deben seleccionarse los modelos en OpenRouter para asegurar gratuidad?</span></summary>
+      <div class="qa-body">Se deben buscar modelos cuyo identificador termine con la etiqueta <code>:free</code> o seleccionar el enrutador balanceado <code>openrouter/free</code>, teniendo siempre en cuenta las restricciones habituales de 20 peticiones por minuto y 50 consultas al día.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 18. ¿Qué función cumple FreeLLMAPI y qué ventaja aporta en desarrollo continuo?</span></summary>
+      <div class="qa-body">Es un enrutador local de código abierto (<code>http://localhost:3001</code>) que combina múltiples claves gratuitas de diversos servicios. Conmuta automáticamente entre cuentas si una de ellas alcanza su límite, permitiendo gestionar más de 7.000 millones de tokens gratuitos al mes sin interrupciones.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 19. ¿Por qué DeepSeek destaca en las pruebas técnicas del ecosistema?</span></summary>
+      <div class="qa-body">Porque sus modelos (DeepSeek V4.1 y DeepSeek Flash) combinan una elevada solvencia en programación y razonamiento con tarifas económicas extraordinariamente bajas, permitiendo crear aplicaciones complejas por menos de un dólar.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 20. ¿Qué significa el código de error HTTP 429 y cuál es su solución?</span></summary>
+      <div class="qa-body">Indica <em>Rate Limit</em> (saturación del límite de frecuencia o de tokens asignados). Se solventa pausando la ejecución durante unos minutos, espaciando las llamadas, cambiando de modelo o utilizando una clave de respaldo.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 21. ¿En qué consiste la Regla del 90% dentro de Craft Anything?</span></summary>
+      <div class="qa-body">Es la advertencia técnica de que una coincidencia visual superior al 90% no garantiza operatividad. Resulta imprescindible auditar interactivamente cada botón, formulario y exportador para comprobar que el código lógico subyacente está implementado.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 17. ¿Cómo deben seleccionarse los modelos en OpenRouter para asegurar gratuidad?</span></summary>
+      <div class="qa-body">Se deben buscar modelos cuyo identificador termine con la etiqueta <code>:free</code> o seleccionar el enrutador balanceado <code>openrouter/free</code>, teniendo siempre en cuenta las restricciones habituales de $20$ peticiones por minuto y $50$ consultas al día.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 18. ¿Qué función cumple FreeLLMAPI y qué ventaja aporta en desarrollo continuo?</span></summary>
+      <div class="qa-body">Es un enrutador local de código abierto (<code>http://localhost:3001</code>) que combina múltiples claves gratuitas de diversos servicios. Conmuta automáticamente entre cuentas si una de ellas alcanza su límite, permitiendo gestionar más de $7.000$ millones de tokens gratuitos al mes sin interrupciones.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 19. ¿Por qué DeepSeek destaca en las pruebas técnicas del ecosistema?</span></summary>
+      <div class="qa-body">Porque sus modelos (DeepSeek V4.1 y DeepSeek Flash) combinan una elevada solvencia en programación y razonamiento con tarifas económicas extraordinariamente bajas, permitiendo crear aplicaciones complejas por menos de un dólar.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 20. ¿Qué significa el código de error HTTP 429 y cuál es su solución?</span></summary>
+      <div class="qa-body">Indica <em>Rate Limit</em> (saturación del límite de frecuencia o de tokens asignados). Se solventa pausando la ejecución durante unos minutos, espaciando las llamadas, cambiando de modelo o utilizando una clave de respaldo.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 21. ¿En qué consiste la Regla del $90\%$ dentro de Craft Anything?</span></summary>
+      <div class="qa-body">Es la advertencia técnica de que una coincidencia visual superior al $90\%$ no garantiza operatividad. Resulta imprescindible auditar interactivamente cada botón, formulario y exportador para comprobar que el código lógico subyacente está implementado.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-2">Nivel 2</span> 22. ¿Cómo se conecta GitHub Copilot CLI como agente constructor en Craft Anything?</span></summary>
+      <div class="qa-body">Se instala el CLI en el sistema, se efectúa la autenticación en consola mediante <code>copilot login</code>, y en Craft Anything se acude a <code>Settings → AI → Detect</code>, pulsando sobre <em>Add</em> y asignándole el rol de constructor (<em>Builder</em>).</div>
+    </details>
+
+    <!-- NIVEL 3 -->
+    <h3>13.3. NIVEL 3 — Nivel Profesional / PRO (Preguntas 23 a 33)</h3>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-3">Nivel 3</span> 23. ¿Qué representa el protocolo MCP en Craft Anything y con qué comandos se administra?</span></summary>
+      <div class="qa-body">Es el <em>Model Context Protocol</em>, un estándar abierto para comunicar herramientas de desarrollo con agentes de IA. Se configura mediante <code>craft-anything-cli setup</code> y se inicializa con <code>craft-anything-cli mcp</code> (o <code>craft-anything-cli mcp --restricted</code> para entornos con permisos acotados).</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-3">Nivel 3</span> 24. ¿Por qué la política Clean Room no sustituye a una jaula de arena (<em>sandbox</em>) del sistema operativo?</span></summary>
+      <div class="qa-body">Porque Clean Room es una convención de desarrollo limpio a nivel de aplicación para estructurar código, no un mecanismo criptográfico de aislamiento del kernel; los procesos ejecutados por agentes autónomos mantienen los privilegios del usuario del sistema.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-3">Nivel 3</span> 25. En la recreación de Loom («Lumabi»), ¿cómo se armonizaron la legalidad y la utilidad técnica?</span></summary>
+      <div class="qa-body">Se configuró una similitud estética deliberadamente inferior al 50% y se modificó el nombre a «Lumabi», garantizando que el producto no fuera una copia visual sino una solución inspirada en su lógica (captura, webcam y exportación local) para evitar conflictos de propiedad intelectual.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-3">Nivel 3</span> 26. ¿Qué cifras de consumo y coste arrojó la replicación de Excalidraw («Pizarra»)?</span></summary>
+      <div class="qa-body">Demandó 1 hora y 20 minutos de cómputo ininterrumpido y procesó cerca de 85 millones de tokens con DeepSeek V4.1, logrando un 93% de fidelidad funcional interactiva por un coste facturado de únicamente 1,54 USD.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-3">Nivel 3</span> 26. ¿Qué cifras de consumo y coste arrojó la replicación de Excalidraw («Pizarra»)?</span></summary>
+      <div class="qa-body">Demandó $1\text{ hora y }20\text{ minutos}$ de cómputo ininterrumpido y procesó cerca de $85\text{ millones de tokens}$ con DeepSeek V4.1, logrando un $93\%$ de fidelidad funcional interactiva por un coste facturado de únicamente $1,54\text{ USD}$.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-3">Nivel 3</span> 27. ¿Qué pauta debe seguirse si la IA entra en un ciclo repetitivo de correcciones fallidas?</span></summary>
+      <div class="qa-body">Interrumpir la tarea, acotar el alcance del desarrollo a una sola pantalla independiente, suministrar capturas estáticas de referencia y formular instrucciones que separen estrictamente la maquetación visual de la lógica algorítmica.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-3">Nivel 3</span> 28. ¿Por qué es ilegal comercializar una copia idéntica de un software privativo aunque haya sido recreada por IA?</span></summary>
+      <div class="qa-body">Porque reproducir código protegido, vulnerar patentes o apropiarse de signos distintivos y marcas registradas infringe la legislación sobre propiedad industrial e intelectual. La experimentación personal es lícita, pero la explotación comercial de réplicas directas conlleva responsabilidades jurídicas.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-3">Nivel 3</span> 29. ¿Qué motores gráficos complementarios pueden vincularse para la creación de experiencias interactivas?</span></summary>
+      <div class="qa-body">En el apartado de configuración de motores (<code>Settings → Engines</code>) se pueden habilitar dependencias para Godot, Unity, Unreal Engine y el lenguaje compilado Rust.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-3">Nivel 3</span> 30. ¿Qué diferencia de madurez técnica existe entre la integración de Claude Code y la de Codex en la plataforma?</span></summary>
+      <div class="qa-body">Claude Code cuenta con validación de construcción real plenamente contrastada. En contraposición, adaptadores como Codex (<code>codex exec</code>) figuraban en la documentación técnica oficial en estado de evaluación parcial, sin despliegues de cuenta real confirmados en los ensayos oficiales.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-3">Nivel 3</span> 31. ¿Qué función cumple el parámetro <code>--restricted</code> al arrancar el servidor MCP?</span></summary>
+      <div class="qa-body">Limita las capacidades del servidor MCP para restringir el acceso de agentes externos a funciones críticas o sensibles del sistema operativo, reduciendo el riesgo de modificaciones involuntarias sobre el disco local.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-3">Nivel 3</span> 32. ¿Cómo se efectúa una ampliación modular sobre un software compilado sin alterar su estabilidad previa?</span></summary>
+      <div class="qa-body">Se carga el proyecto ya creado en Craft Anything, se describe la nueva funcionalidad acotando con precisión los nuevos componentes (posiciones, dimensiones o formatos de exportación) y se instruye al modelo a preservar intacta la base de código funcional previa.</div>
+    </details>
+
+    <details class="qa-item">
+      <summary><span><span class="badge lvl-3">Nivel 3</span> 33. ¿Qué alcance estratégico tiene el principio de que la recreación no es el destino sino el punto de partida?</span></summary>
+      <div class="qa-body">Significa que la recreación automatizada disuelve las barreras técnicas convencionales, permitiendo a los creadores utilizar herramientas existentes como cimientos sobre los cuales personalizar, innovar y construir soluciones digitales enteramente nuevas.</div>
+    </details>
+
+    <div class="tab-footer-nav">
+      <button type="button" class="nav-step-btn" onclick="go(4)">⬅ Anterior: Ética, Seguridad y Checklist</button>
+      <button type="button" class="nav-step-btn next-btn" onclick="go(6)">Siguiente: ERRORES ➔</button>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       PESTAÑA 6: ERRORES (Sección 11 Completa)
+       ===================================================================== -->
+  <section class="tab-section" id="sec-errores" data-t="ERRORES">
+    <h2>11. Guía Sistemática de Diagnóstico y Resolución de Problemas</h2>
+    <p>Consulta esta guía estructurada y la tabla de contingencias para diagnosticar y resolver de inmediato cualquier incidencia técnica en Craft Anything.</p>
+
+    <div class="card">
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Código o Síntoma</th>
+              <th>Origen del Problema</th>
+              <th>Procedimiento Correctivo Paso a Paso</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>11.1. Fallo al detectar Ollama o LM Studio</strong></td>
+              <td>El servidor local no está arrancado, el puerto está bloqueado o el modelo no está en memoria.</td>
+              <td>1. Compruebe que Ollama esté ejecutándose o presione <em>Start server</em> en LM Studio.<br>2. Verifique la dirección en el navegador (<code>localhost:11434</code> o <code>localhost:1234</code>).<br>3. En Craft Anything, utilice la opción <strong>Add an AI</strong> para ingresar la URL de forma manual.</td>
+            </tr>
+            <tr>
+              <td><strong>11.2. Error 401 / Unauthorized</strong></td>
+              <td>Credencial de API incorrecta, vencida, revocada o con caracteres en blanco accidentales.</td>
+              <td>Acceda a la consola del proveedor (DeepSeek, Groq, OpenAI), genere una nueva clave API y péguela en Craft Anything comprobando que no contenga espacios al inicio o al final.</td>
+            </tr>
+            <tr>
+              <td><strong>11.3. Error 404 / Model Not Found</strong></td>
+              <td>El identificador del modelo tiene una errata o ha sido descatalogado por el proveedor.</td>
+              <td>Revise el nombre oficial del modelo en el catálogo activo de su proveedor (ej. en el panel de Groq u OpenRouter) y actualice el campo exacto en la configuración de Craft Anything.</td>
+            </tr>
+            <tr>
+              <td><strong>11.4. Error 429 / Rate Limit</strong></td>
+              <td>Se ha sobrepasado la cuota de peticiones por minuto o el límite máximo de tokens asignados.</td>
+              <td>1. Detenga las peticiones durante unos minutos para permitir el reinicio de la ventana de cuota.<br>2. Alterne temporalmente hacia otro proveedor o modelo.<br>3. En FreeLLMAPI, active una clave de reserva alternativa.</td>
+            </tr>
+            <tr>
+              <td><strong>11.5. El modelo responde texto pero no crea archivos</strong></td>
+              <td>La conexión carece de llamadas a herramientas (<em>tool calling</em>) o no hay un agente ejecutor asignado.</td>
+              <td>Las claves de API genéricas no siempre compilan código físico de forma directa. Enlace un agente de programación (<em>Harness</em>) como Claude Code, DeepSeek Harness (<code>dsh</code>) o Copilot CLI con rol de <strong>Builder</strong>.</td>
+            </tr>
+            <tr>
+              <td><strong>11.6. Bucle de corrección o pérdida de calidad visual</strong></td>
+              <td>La memoria de contexto del modelo se ha saturado por acumulación de errores e instrucciones contradictorias.</td>
+              <td>1. Pause la ejecución del proyecto.<br>2. Reduzca el alcance a una sola vista o componente.<br>3. Adjunte imágenes de referencia estáticas y separe las correcciones estéticas de la depuración funcional.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card card-warning">
+      <h3>🔍 Detalle Operativo para Salir de Bucles Repetitivos (11.6)</h3>
+      <p>Cuando un modelo encadena más de tres intentos fallidos al corregir un componente, el historial de errores contamina la ventana de contexto. En lugar de insistir con mensajes breves como <em>"sigue sin funcionar"</em>, detén la tarea, abre una vista atómica limpia y utiliza el <strong>Prompt 14.4 de descongestión de contexto</strong> disponible en la siguiente pestaña.</p>
+    </div>
+
+    <div class="tab-footer-nav">
+      <button type="button" class="nav-step-btn" onclick="go(5)">⬅ Anterior: 33 Preguntas (Q&amp;A)</button>
+      <button type="button" class="nav-step-btn next-btn" onclick="go(7)">Siguiente: PROMPTS ➔</button>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       PESTAÑA 7: PROMPTS (Sección 14 Completa + Prompts de Consola/Flujo)
+       ===================================================================== -->
+  <section class="tab-section" id="sec-prompts" data-t="PROMPTS">
+    <h2>14. Directorio Exhaustivo de Prompts y Patrones de Instrucción</h2>
+    <p>Esta sección consolida <strong>todos los prompts y patrones de instrucción</strong> empleados a lo largo del tutorial, junto con la descripción exacta de dónde y cuándo se emplea cada uno y su botón de copiado íntegro.</p>
+
+    <!-- PROMPT 14.1 -->
+    <div class="card card-highlight">
+      <h3>14.1. Prompt de recreación funcional con control de similitud (Caso Loom / «Lumabi»)</h3>
+      <p><strong>Dónde se emplea:</strong> En el formulario de descripción inicial de Craft Anything al enlazar una URL comercial (modo <em>Website</em>) activando el modo de investigación profunda con Ghidra para crear una alternativa legal con menos del 50% de similitud estética.</p>
+      <div class="copy-block">
+        <div class="copy-header"><span class="copy-label">Prompt 14.1 — Recreación Funcional (&lt;50% Similitud)</span><button type="button" class="copy-btn" data-copy-target="prm-14-1">COPIAR</button></div>
+        <pre class="copy-content" id="prm-14-1">Analiza la herramienta web disponible en esta URL para inspirarte y extraer sus funcionalidades operativas principales. Construye una aplicación totalmente funcional, pero evita crear una réplica visual directa. La similitud gráfica debe mantenerse estrictamente por debajo del 50%. Aplica un cambio completo de identidad visual y de denominación, rebautizando el software como [Nombre Personalizado, ej: Lumabi]. El núcleo operativo debe garantizar la captura de pantalla completa con cámara web integrada, grabación sincronizada de micrófono y exportación local de archivos sin limitaciones de tiempo.</pre>
+      </div>
+    </div>
+
+    <!-- PROMPT 14.2 -->
+    <div class="card card-highlight">
+      <h3>14.2. Prompt de recreación de alta fidelidad gráfica (Caso Excalidraw / «Pizarra»)</h3>
+      <p><strong>Dónde se emplea:</strong> En la reconstrucción detallada de herramientas visuales e interactivas complejas (pizarras digitales, lienzos vectoriales de código abierto) cuando se busca una fidelidad superior al 90% ejecutada en local.</p>
+      <div class="copy-block">
+        <div class="copy-header"><span class="copy-label">Prompt 14.2 — Recreación de Alta Fidelidad (&gt;90% Similitud)</span><button type="button" class="copy-btn" data-copy-target="prm-14-2">COPIAR</button></div>
+        <pre class="copy-content" id="prm-14-2">Recrea esta aplicación web en local con una similitud superior al 90%. Asegura la operatividad completa de las herramientas del lienzo: dibujo libre a mano alzada, formas geométricas básicas, flechas dinámicas de enlace, herramienta de selección para manipulación de objetos y herramienta de mano para desplazamiento panorámico continuo del espacio de trabajo. Incorpora módulo de exportación del documento a formato PDF y archivos gráficos locales.</pre>
+      </div>
+    </div>
+
+    <!-- PROMPT 14.3 -->
+    <div class="card">
+      <h3>14.3. Prompt de ampliación e iteración modular sobre código existente</h3>
+      <p><strong>Dónde se emplea:</strong> En el chat de iteración de un proyecto ya generado y en funcionamiento (modalidad <em>Existing App</em> o segunda fase del Caso «Lumabi») para añadir mejoras como calidad 2K, tamaños y marcos de cámara sin romper el código base.</p>
+      <div class="copy-block">
+        <div class="copy-header"><span class="copy-label">Prompt 14.3 — Iteración Modular Segura</span><button type="button" class="copy-btn" data-copy-target="prm-14-3">COPIAR</button></div>
+        <pre class="copy-content" id="prm-14-3">Tomando como base la aplicación ya construida y preservando su estabilidad previa, incorpora las siguientes opciones de personalización: 1) Selector del tamaño del visor de cámara en tres modos (pequeño, mediano y grande). 2) Selector de ubicación en pantalla (esquinas inferiores o laterales). 3) Alternador geométrico del marco de cámara (circular o rectangular). 4) Ajuste de calidad máxima de exportación hasta resolución 2K nativa.</pre>
+      </div>
+    </div>
+
+    <!-- PROMPT 14.4 -->
+    <div class="card card-warning">
+      <h3>14.4. Prompt de descongestión de contexto y mitigación de bucles</h3>
+      <p><strong>Dónde se emplea:</strong> En la consola de instrucciones cuando la generación entra en ciclos repetitivos de error o degradación visual (Sección 9.3 y Error 11.6), obligando a la IA a trabajar en una vista atómica única.</p>
+      <div class="copy-block">
+        <div class="copy-header"><span class="copy-label">Prompt 14.4 — Salida de Bucles y Aislamiento de Vista</span><button type="button" class="copy-btn" data-copy-target="prm-14-4">COPIAR</button></div>
+        <pre class="copy-content" id="prm-14-4">Pausa la edición global. Restringe el alcance operativo del desarrollo a una sola pantalla independiente. Toma como guía estructural exclusiva la imagen estática de referencia proporcionada. Desvincula de forma estricta las pruebas estéticas de la lógica funcional: primero compila la interfaz gráfica estática; una vez aprobada visualmente, procederemos a enlazar los controladores de eventos de forma unitaria.</pre>
+      </div>
+    </div>
+
+    <!-- PROMPT 14.5 -->
+    <div class="card">
+      <h3>14.5. Prompt de auditoría preliminar sin escritura de código</h3>
+      <p><strong>Dónde se emplea:</strong> En la evaluación previa de una aplicación o web cuando se utiliza una conexión de API directa o un modelo local compacto (Ruta 01 / Ruta 02) para comprobar conectividad y arquitectura sin gastar tokens en compilación.</p>
+      <div class="copy-block">
+        <div class="copy-header"><span class="copy-label">Prompt 14.5 — Auditoría Estructural sin Compilación</span><button type="button" class="copy-btn" data-copy-target="prm-14-5">COPIAR</button></div>
+        <pre class="copy-content" id="prm-14-5">Realiza una auditoría técnica estructural sobre este sitio web o repositorio. Identifica sus dependencias principales, controladores de eventos y arquitectura de navegación. No redactes código nuevo ni generes ficheros en disco; entrégame un informe esquemático de su funcionamiento para planificar las modificaciones.</pre>
+      </div>
+    </div>
+
+    <!-- PROMPT 14.6 -->
+    <div class="card card-success">
+      <h3>14.6. Prompt de validación funcional elemental (<em>Smoke Test</em>)</h3>
+      <p><strong>Dónde se emplea:</strong> En la modalidad <em>From Scratch</em> (Desde cero) al configurar por primera vez un nuevo proveedor, modelo o agente <em>Harness</em> (Ruta 04) para verificar empíricamente que soporta <em>tool calling</em> y escribe archivos físicos en el disco duro.</p>
+      <div class="copy-block">
+        <div class="copy-header"><span class="copy-label">Prompt 14.6 — Smoke Test de Escritura en Disco</span><button type="button" class="copy-btn" data-copy-target="prm-14-6">COPIAR</button></div>
+        <pre class="copy-content" id="prm-14-6">Genera una aplicación web básica de vista única que contenga un botón interactivo y un contador numérico. Cada pulsación del botón debe incrementar el valor en pantalla. Escribe los archivos físicos correspondientes en el directorio local y comprueba que el servidor pueda inicializarse con normalidad.</pre>
+      </div>
+    </div>
+
+    <!-- PROMPT 14.7 -->
+    <div class="card">
+      <h3>14.7. Prompt de generación audiovisual complementaria (OpenArt / Sidans 2.5)</h3>
+      <p><strong>Dónde se emplea:</strong> En herramientas multimedia de IA (como OpenArt con el modelo Sidans 2.5) para producir material audiovisual de apoyo, tráilers y demostraciones de producto del software creado.</p>
+      <div class="copy-block">
+        <div class="copy-header"><span class="copy-label">Prompt 14.7 — Generación Audiovisual (OpenArt / Sidans 2.5)</span><button type="button" class="copy-btn" data-copy-target="prm-14-7">COPIAR</button></div>
+        <pre class="copy-content" id="prm-14-7">Genera una escena visual en resolución Full HD de hasta 30 segundos representando [Entorno de software o acción de usuario], con un desplazamiento de cámara suave en travelling frontal. Produce de forma simultánea el vídeo y los efectos de audio ambiental sincronizados en una sola pasada de renderizado. Utiliza los fotogramas de referencia para conservar la coherencia estética de personajes y elementos, permitiendo editar regiones localizadas sin regenerar la secuencia íntegra.</pre>
+      </div>
+    </div>
+
+    <div class="tab-footer-nav">
+      <button type="button" class="nav-step-btn" onclick="go(6)">⬅ Anterior: ERRORES</button>
+      <button type="button" class="nav-step-btn next-btn" onclick="go(8)">Siguiente: Glosario y Resumen ➔</button>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       PESTAÑA 8: GLOSARIO Y RESUMEN (Sección 15 + Síntesis Ejecutiva)
+       ===================================================================== -->
+  <section class="tab-section" id="sec-glosario" data-t="GLOSARIO Y RESUMEN">
+    <h2>15. Glosario Pedagógico de Conceptos Técnicos</h2>
+    <div class="card">
+      <ul>
+        <li><strong>API (Application Programming Interface):</strong> Interfaz estandarizada que permite la comunicación y transferencia de datos entre diferentes aplicaciones informáticas mediante llamadas protocolizadas.</li>
+        <li><strong>API Key:</strong> Código alfanumérico confidencial que actúa como identificador y credencial para autorizar el uso de un servicio web y registrar su consumo.</li>
+        <li><strong>Builder (Constructor):</strong> Rol asignado en Craft Anything a un agente de inteligencia artificial con permisos para crear carpetas, escribir código fuente y ejecutar herramientas de compilación en el sistema local.</li>
+        <li><strong>Clean Room:</strong> Entorno controlado y aislado en el que se analiza y reconstruye software asegurando que el código resultante se genera de forma limpia e independiente.</li>
+        <li><strong>Endpoint:</strong> Dirección URL o punto de conexión de red mediante el cual un cliente accede a las funciones de un servidor o modelo de lenguaje.</li>
+        <li><strong>Ghidra:</strong> Suite de software abierta orientada al análisis y descompilación de código, empleada para auditar binarios y arquitecturas informáticas.</li>
+        <li><strong>Harness (o Agente de Programación):</strong> Entorno de software que envuelve a un modelo de lenguaje y le proporciona capacidades activas para ejecutar comandos de consola, gestionar el sistema de archivos y depurar errores.</li>
+        <li><strong>Inferencia:</strong> Etapa operativa en la que un modelo de inteligencia artificial entrenado procesa una entrada y genera una predicción o respuesta.</li>
+        <li><strong>Localhost (<code>127.0.0.1</code>):</strong> Dirección de red reservada que hace referencia exclusiva al propio ordenador en el que se está trabajando.</li>
+        <li><strong>MCP (Model Context Protocol):</strong> Estándar abierto de comunicación bidireccional diseñado para conectar herramientas de desarrollo, agentes y modelos de inteligencia artificial.</li>
+        <li><strong>Onboarding:</strong> Flujo introductorio y pedagógico de bienvenida diseñado para guiar al usuario en la preparación inicial de un software.</li>
+        <li><strong>Rate Limit:</strong> Restricción establecida por un proveedor técnico que limita la cantidad de solicitudes o tokens procesables en un intervalo de tiempo.</li>
+        <li><strong>Token:</strong> Fracción mínima de información textual (palabra, subpalabra o caracteres) que procesan los modelos de lenguaje natural.</li>
+        <li><strong>Tool Calling (o Function Calling):</strong> Habilidad de los modelos de IA avanzados para estructurar llamadas a funciones externas del sistema en lugar de limitarse a producir texto plano.</li>
+      </ul>
+    </div>
+
+    <h2>Resumen Ejecutivo del Ecosistema Craft Anything</h2>
+    <div class="card card-highlight">
+      <ul>
+        <li><strong>Filosofía soberana:</strong> Impulsado por Brandon Thomas en Artcraft, Craft Anything democratiza la creación de software local abierto frente a las suscripciones abusivas.</li>
+        <li><strong>Arquitectura de 4 Rutas:</strong> Puedes operar gratis en privado con <strong>Ollama/LM Studio</strong> (Ruta 01), sin coste en la nube con <strong>OpenRouter/Groq/NVIDIA NIM/FreeLLMAPI</strong> (Ruta 02), con máxima eficiencia en pago por uso mediante <strong>DeepSeek V4.1</strong> (Ruta 03), o con capacidad real de compilación física en disco mediante agentes <strong>Harnesses con rol Builder</strong> como Claude Code, <code>dsh</code> y Copilot CLI (Ruta 04).</li>
+        <li><strong>Resultados demostrados:</strong> Recreación funcional controlada de Loom («Lumabi», menos del 50% de similitud, resolución 2K) por <strong>0,89 USD</strong> y replicación de alta fidelidad de Excalidraw («Pizarra», 93% de similitud, 85 millones de tokens) por <strong>1,54 USD</strong>.</li>
+      </ul>
+    </div>
+
+    <div class="tab-footer-nav">
+      <button type="button" class="nav-step-btn" onclick="go(7)">⬅ Anterior: PROMPTS</button>
+      <button type="button" class="nav-step-btn next-btn" onclick="go(9)">Siguiente: FUENTES ➔</button>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       PESTAÑA 9: FUENTES (Sección 16 Completa — TODOS LOS URLS CON BOTÓN)
+       ===================================================================== -->
+  <section class="tab-section" id="sec-fuentes" data-t="FUENTES">
+    <h2>16. Directorio de Fuentes Fiables, Endpoints y Documentación Oficial</h2>
+    <p>Todos los enlaces oficiales y endpoints documentados incluyen su botón dedicado <strong>«Abrir enlace en nueva ventana»</strong> y botón de copia directa.</p>
+
+    <h3>16.1. Fuentes de Acceso Audiovisual y Académico</h3>
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Vídeo tutorial maestro del proyecto (Canal Alejavi Rivera)</span>
+        <span class="url-code">https://youtube.com/watch?v=hclMMYHiMtI&amp;is=kw3gWmkEIQi_ga0C</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="https://youtube.com/watch?v=hclMMYHiMtI&is=kw3gWmkEIQi_ga0C">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="https://youtube.com/watch?v=hclMMYHiMtI&is=kw3gWmkEIQi_ga0C">COPIAR URL</button>
+      </div>
+    </div>
+    <div class="card">
+      <p><strong>Guía práctica técnica (PDF):</strong> <em>«Ebook Craft Anything: 4 Formas de Conectar tu Inteligencia Artificial»</em>, por Academia Artificial y Alejavi Rivera (Noviembre de 2026).</p>
+    </div>
+
+    <h3>16.2. Ruta 01: Entornos Locales y Descargas</h3>
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Descarga oficial de Ollama</span>
+        <span class="url-code">https://ollama.com</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="https://ollama.com">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="https://ollama.com">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Endpoint local del servidor Ollama (OpenAI-compatible)</span>
+        <span class="url-code">http://localhost:11434/v1</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="http://localhost:11434/v1">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="http://localhost:11434/v1">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Descarga oficial de LM Studio</span>
+        <span class="url-code">https://lmstudio.ai</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="https://lmstudio.ai">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="https://lmstudio.ai">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Endpoint predeterminado de LM Studio</span>
+        <span class="url-code">http://localhost:1234/v1</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="http://localhost:1234/v1">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="http://localhost:1234/v1">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Verificación de modelos en LM Studio mediante cURL</span>
+        <span class="url-code">http://localhost:1234/v1/models</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="http://localhost:1234/v1/models">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="http://localhost:1234/v1/models">COPIAR URL</button>
+      </div>
+    </div>
+
+    <h3>16.3. Ruta 02: APIs con Nivel Gratuito y Enrutadores de Cuotas</h3>
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Endpoint de conexión para OpenRouter</span>
+        <span class="url-code">https://openrouter.ai/api/v1</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="https://openrouter.ai/api/v1">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="https://openrouter.ai/api/v1">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Consola de desarrollo de Groq Cloud</span>
+        <span class="url-code">https://console.groq.com</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="https://console.groq.com">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="https://console.groq.com">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Endpoint oficial OpenAI-compatible de Groq Cloud</span>
+        <span class="url-code">https://api.groq.com/openai/v1</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="https://api.groq.com/openai/v1">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="https://api.groq.com/openai/v1">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Catálogo y registro de desarrolladores de NVIDIA (NVIDIA NIM)</span>
+        <span class="url-code">https://build.nvidia.com</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="https://build.nvidia.com">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="https://build.nvidia.com">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">URL base del endpoint alojado de NVIDIA NIM</span>
+        <span class="url-code">https://integrate.api.nvidia.com/v1</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="https://integrate.api.nvidia.com/v1">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="https://integrate.api.nvidia.com/v1">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Panel web de administración de FreeLLMAPI</span>
+        <span class="url-code">http://localhost:3001</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="http://localhost:3001">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="http://localhost:3001">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">URL base para enlazar FreeLLMAPI en Craft Anything</span>
+        <span class="url-code">http://localhost:3001/v1</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="http://localhost:3001/v1">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="http://localhost:3001/v1">COPIAR URL</button>
+      </div>
+    </div>
+
+    <h3>16.4. Ruta 03: Proveedores Oficiales de Pago por Uso</h3>
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Consola de desarrollo y gestión de claves de DeepSeek</span>
+        <span class="url-code">https://platform.deepseek.com</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="https://platform.deepseek.com">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="https://platform.deepseek.com">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Dirección oficial de la API de DeepSeek</span>
+        <span class="url-code">https://api.deepseek.com</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="https://api.deepseek.com">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="https://api.deepseek.com">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Portal de desarrollo de OpenAI</span>
+        <span class="url-code">https://platform.openai.com</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="https://platform.openai.com">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="https://platform.openai.com">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">URL base de la API oficial de OpenAI</span>
+        <span class="url-code">https://api.openai.com/v1</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="https://api.openai.com/v1">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="https://api.openai.com/v1">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Consola oficial para API Keys de Anthropic</span>
+        <span class="url-code">https://console.anthropic.com</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="https://console.anthropic.com">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="https://console.anthropic.com">COPIAR URL</button>
+      </div>
+    </div>
+
+    <div class="url-card">
+      <div class="url-info">
+        <span class="url-title">Portal web para usuarios finales de Claude</span>
+        <span class="url-code">https://claude.ai</span>
+      </div>
+      <div class="url-actions">
+        <button type="button" class="btn-open-new-window" data-open-url="https://claude.ai">↗ Abrir enlace en nueva ventana</button>
+        <button type="button" class="btn-copy-url" data-raw-copy="https://claude.ai">COPIAR URL</button>
+      </div>
+    </div>
+
+    <h3>16.5. Repositorios y Documentación Técnica Complementaria</h3>
+    <div class="card">
+      <ol>
+        <li><strong>Craft Anything:</strong> Guía técnica oficial y estado de integraciones de agentes ejecutores.</li>
+        <li><strong>Ollama:</strong> Documentación de la API compatible con el estándar de OpenAI.</li>
+        <li><strong>OpenRouter:</strong> Catálogo de modelos con sufijo <code>:free</code> y enrutador balanceado <code>openrouter/free</code>.</li>
+        <li><strong>NVIDIA:</strong> Catálogo de microservicios alojados <em>API Catalog</em>.</li>
+        <li><strong>LM Studio:</strong> Guía de configuración del servidor local y ejecución de modelos interactivos.</li>
+        <li><strong>Groq:</strong> Especificación técnica sobre cuotas y soporte de llamadas a herramientas (<em>tool calling</em>).</li>
+        <li><strong>FreeLLMAPI:</strong> Repositorio de código abierto y guía de despliegue mediante Docker en GitHub.</li>
+        <li><strong>Artcraft / GitHub:</strong> Repositorio oficial con el catálogo de herramientas abiertas (Photocraft, Wordcraft, Effectcraft, Designcraft).</li>
+      </ol>
+    </div>
+
+    <div class="tab-footer-nav">
+      <button type="button" class="nav-step-btn" onclick="go(8)">⬅ Anterior: Glosario y Resumen</button>
+      <button type="button" class="nav-step-btn next-btn" onclick="go(10)">Siguiente: CRÉDITOS ➔</button>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       PESTAÑA 10: CRÉDITOS (ORDEN OBLIGATORIO ESTRICTO)
+       ===================================================================== -->
+  <section class="tab-section" id="sec-creditos" data-t="CRÉDITOS">
+    <!-- 1. Título de la sección -->
+    <h2>CRÉDITOS</h2>
+
+    <!-- 2. SVG animado compartido con INICIO -->
+    <div class="svg-hero-wrapper">
+      <div class="svg-mount-target" id="svg-target-credits" role="img" aria-label="Ilustración animada compartida del núcleo constructor de Craft Anything"></div>
+    </div>
+    <div class="svg-controls-bar">
+      <span>⚡ Instancia Sincronizada desde Plantilla Única</span>
+      <button type="button" class="tool-btn" data-toggle-svg="true">⏸ Pausar/Reanudar SVG</button>
+    </div>
+
+    <!-- 3. Breve descripción de la ilustración -->
+    <div class="card">
+      <p><strong>Descripción de la ilustración:</strong> Escena tecnológica vertical (formato 4:5) que representa el núcleo de construcción autónoma (<em>Builder</em>) de Craft Anything rodeado por anillos orbitales de análisis inverso con Ghidra y protocolo MCP, alimentado simultáneamente por las 4 rutas de inteligencia artificial (Local, Gratuitas, API Oficial DeepSeek y Harnesses CLI) y proyectando las métricas reales de compilación de «Lumabi» y «Pizarra».</p>
+    </div>
+
+    <!-- 4. Nombre del autor y 5. Texto «Autor del tutorial» -->
+    <div class="credits-author-box">
+      <div class="credits-author-name">Rubén Sbarsky</div>
+      <div class="credits-author-role">Autor del tutorial</div>
+    </div>
+
+    <!-- 6. Información adicional pertinente y Fecha/Hora sincronizada fija -->
+    <div class="card card-highlight">
+      <h3>Información Técnica de Edición y Sincronización</h3>
+      <ul>
+        <li><strong>Obra:</strong> Revolución del Software con Craft Anything — Guía Completa y Tutorial Maestro Paso a Paso.</li>
+        <li><strong>Arquitectura de código:</strong> Desarrollado bajo estándares <em>Clean Code</em> (Robert C. Martin) y Metodología Gauntlet V3.</li>
+        <li><strong>Optimización móvil:</strong> Diseño adaptativo probado desde resolución de 360 px de ancho (Samsung Galaxy A02s) hasta monitores de escritorio.</li>
+        <li><strong>Fecha y hora de creación (fija):</strong> <code>12/11/2026 — 22:20:14</code></li>
+      </ul>
+    </div>
+
+    <!-- 7. Número de versión -->
+    <div class="card">
+      <p><strong>Número de versión del entregable:</strong> <code>V002</code> (<code>tutorial_craft_anything_V002.html</code>)</p>
+    </div>
+
+    <div class="tab-footer-nav">
+      <button type="button" class="nav-step-btn" onclick="go(9)">⬅ Anterior: FUENTES</button>
+      <button type="button" class="nav-step-btn next-btn" onclick="go(0)">🏠 Volver a INICIO</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- BOTONES FLOTANTES MOVIBLES (ARRASTRABLES) -->
+<button type="button" class="draggable-fab" id="fab-home" title="Mantén pulsado para mover o toca para ir a INICIO" aria-label="Ir a la pestaña de Inicio">🏠 INICIO</button>
+<button type="button" class="draggable-fab" id="fab-top" title="Mantén pulsado para mover o toca para subir al inicio de esta pestaña" aria-label="Volver arriba de la pestaña actual">⬆ ARRIBA</button>
+
+<!-- NOTIFICACIÓN TOAST -->
+<div id="toast-notification" role="status" aria-live="polite">Copiado al portapapeles</div>
+
+<script>
+(function() {
+  'use strict';
+
+  /* =========================================================================
+     1. EXTRACCIÓN Y GESTIÓN DE PLANTILLA SVG ÚNICA (SIN DUPLICACIÓN EN DOM)
+     ========================================================================= */
+  const masterHolder = document.getElementById('svg-master-template-holder');
+  const rawSvgTemplate = masterHolder ? masterHolder.innerHTML.trim() : '';
+  if (masterHolder && masterHolder.parentNode) {
+    masterHolder.parentNode.removeChild(masterHolder);
+  }
+
+  let isSvgPaused = false;
+
+  function buildUniqueSvgMarkup(instancePrefix) {
+    return rawSvgTemplate.replace(/IDPREFIX_/g, instancePrefix + '_');
+  }
+
+  function mountSvgIntoContainer(containerId, instancePrefix) {
+    const target = document.getElementById(containerId);
+    if (!target || !rawSvgTemplate) return;
+
+    try {
+      target.innerHTML = buildUniqueSvgMarkup(instancePrefix);
+      const svgElement = target.querySelector('svg');
+      if (!svgElement) {
+        activateDataUriFallback(target, instancePrefix);
+        return;
+      }
+      svgElement.classList.toggle('svg-paused', isSvgPaused);
+    } catch (error) {
+      activateDataUriFallback(target, instancePrefix);
+    }
+  }
+
+  function activateDataUriFallback(targetElement, instancePrefix) {
+    const fallbackSvg = buildUniqueSvgMarkup(instancePrefix);
+    const encoded = 'data:image/svg+xml;utf8,' + encodeURIComponent(fallbackSvg);
+    targetElement.innerHTML = '<img src="' + encoded + '" alt="Ilustración del ecosistema Craft Anything" style="width:100%;height:100%;object-fit:contain;" />';
+  }
+
+  function ensureActiveTabSvgMounted(activeIndex) {
+    if (activeIndex === 0) {
+      const homeTarget = document.getElementById('svg-target-home');
+      if (homeTarget && !homeTarget.querySelector('svg, img')) {
+        mountSvgIntoContainer('svg-target-home', 'heroHome');
+      }
+    } else if (activeIndex === 10) {
+      const creditsTarget = document.getElementById('svg-target-credits');
+      if (creditsTarget && !creditsTarget.querySelector('svg, img')) {
+        mountSvgIntoContainer('svg-target-credits', 'heroCredits');
+      }
+    }
+  }
+
+  /* Comprobación periódica de autorreparación si un contenedor visible queda vacío */
+  setInterval(function() {
+    ensureActiveTabSvgMounted(currentSectionIndex);
+  }, 1800);
+
+  /* Control manual de pausa/reanudación del SVG */
+  document.addEventListener('click', function(event) {
+    const toggleBtn = event.target.closest('[data-toggle-svg]');
+    if (!toggleBtn) return;
+    isSvgPaused = !isSvgPaused;
+    document.querySelectorAll('.svg-mount-target svg').forEach(function(svgNode) {
+      svgNode.classList.toggle('svg-paused', isSvgPaused);
+    });
+    showToast(isSvgPaused ? 'Animación SVG en pausa' : 'Animación SVG reanudada');
+  });
+
+  /* =========================================================================
+     2. NAVEGACIÓN SPA DE PESTAÑAS Y PANEL LATERAL ☰ ÍNDICE (#dr y #mb)
+     ========================================================================= */
+  const secs = Array.from(document.querySelectorAll('.tab-section'));
+  const navChips = Array.from(document.querySelectorAll('#top-navigation .chip[data-tab-index]'));
+  const dr = document.querySelector('#dr');
+  const mb = document.querySelector('#mb');
+  let currentSectionIndex = 0;
+
+  function tg(forceState) {
+    const shouldOpen = typeof forceState === 'boolean' ? forceState : !dr.classList.contains('o');
+    dr.classList.toggle('o', shouldOpen);
+    mb.setAttribute('aria-expanded', String(dr.classList.contains('o')));
+  }
+
+  function scrollCurrentTabToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  window.go = function(targetIndex) {
+    const validIndex = Math.max(0, Math.min(secs.length - 1, Number(targetIndex) || 0));
+    currentSectionIndex = validIndex;
+
+    secs.forEach(function(section, idx) {
+      section.classList.toggle('active', idx === validIndex);
+    });
+
+    navChips.forEach(function(chip) {
+      const chipIdx = Number(chip.getAttribute('data-tab-index'));
+      const isCurrent = chipIdx === validIndex;
+      chip.classList.toggle('active', isCurrent);
+      if (isCurrent) {
+        chip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    });
+
+    Array.from(dr.children).forEach(function(anchor, j) {
+      anchor.classList.toggle('on', j === validIndex);
+    });
+
+    ensureActiveTabSvgMounted(validIndex);
+    scrollCurrentTabToTop();
+    saveStorageValue('craft_active_tab_v001', String(validIndex));
+  };
+
+  /* Generación dinámica de las entradas del Índice lateral (#dr) */
+  secs.forEach(function(sectionElement, index) {
+    const anchor = document.createElement('a');
+    const titleText = sectionElement.dataset.t || (sectionElement.querySelector('h2') ? sectionElement.querySelector('h2').textContent : 'Sección');
+    anchor.textContent = (index ? index + '. ' : '') + titleText;
+    anchor.setAttribute('tabindex', '0');
+    anchor.onclick = function() {
+      window.go(index);
+      tg(false);
+    };
+    anchor.onkeydown = function(event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        window.go(index);
+        tg(false);
+      }
+    };
+    dr.appendChild(anchor);
+  });
+
+  mb.onclick = function() {
+    tg();
+  };
+
+  const homeIndexBtn = document.querySelector('#ix');
+  if (homeIndexBtn) {
+    homeIndexBtn.onclick = function() {
+      tg(true);
+    };
+  }
+
+  navChips.forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      const idx = Number(chip.getAttribute('data-tab-index'));
+      window.go(idx);
+      tg(false);
+    });
+  });
+
+  window.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      tg(false);
+      closeSearchDrawer();
+    }
+  });
+
+  document.addEventListener('click', function(event) {
+    if (!event.target.closest('#dr, #mb, #ix')) {
+      tg(false);
+    }
+  });
+
+  /* =========================================================================
+     3. BOTONES FLOTANTES MOVIBLES (INICIO Y ARRIBA) CON SOPORTE TÁCTIL Y RATÓN
+     ========================================================================= */
+  function makeFabDraggable(fabElement, onTapCallback) {
+    let startX = 0;
+    let startY = 0;
+    let initialLeft = 0;
+    let initialTop = 0;
+    let hasMoved = false;
+    let isDragging = false;
+
+    fabElement.addEventListener('pointerdown', function(e) {
+      isDragging = true;
+      hasMoved = false;
+      startX = e.clientX;
+      startY = e.clientY;
+      const rect = fabElement.getBoundingClientRect();
+      initialLeft = rect.left;
+      initialTop = rect.top;
+      fabElement.setPointerCapture(e.pointerId);
+    });
+
+    fabElement.addEventListener('pointermove', function(e) {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+        hasMoved = true;
+      }
+      if (hasMoved) {
+        const maxLeft = window.innerWidth - fabElement.offsetWidth - 6;
+        const maxTop = window.innerHeight - fabElement.offsetHeight - 6;
+        const nextLeft = Math.max(6, Math.min(maxLeft, initialLeft + dx));
+        const nextTop = Math.max(66, Math.min(maxTop, initialTop + dy));
+        fabElement.style.left = nextLeft + 'px';
+        fabElement.style.top = nextTop + 'px';
+        fabElement.style.right = 'auto';
+        fabElement.style.bottom = 'auto';
+      }
+    });
+
+    fabElement.addEventListener('pointerup', function(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      fabElement.releasePointerCapture(e.pointerId);
+      if (!hasMoved) {
+        onTapCallback();
+      }
+    });
+  }
+
+  const fabHome = document.getElementById('fab-home');
+  const fabTop = document.getElementById('fab-top');
+
+  makeFabDraggable(fabHome, function() {
+    window.go(0);
+  });
+
+  makeFabDraggable(fabTop, function() {
+    scrollCurrentTabToTop();
+  });
+
+  /* =========================================================================
+     4. COPIADO DE PROMPTS/CÓDIGO Y APERTURA DE URLS EN NUEVA VENTANA
+     ========================================================================= */
+  const toastElement = document.getElementById('toast-notification');
+  let toastTimeout = null;
+
+  function showToast(message) {
+    toastElement.textContent = message;
+    toastElement.classList.add('visible');
+    if (toastTimeout) clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(function() {
+      toastElement.classList.remove('visible');
+    }, 2200);
+  }
+
+  function copyPlainText(textToCopy, triggerBtn) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(textToCopy).then(function() {
+        indicateCopySuccess(triggerBtn);
+      }).catch(function() {
+        fallbackCopyText(textToCopy, triggerBtn);
+      });
+    } else {
+      fallbackCopyText(textToCopy, triggerBtn);
+    }
+  }
+
+  function fallbackCopyText(text, triggerBtn) {
+    try {
+      const tempArea = document.createElement('textarea');
+      tempArea.value = text;
+      tempArea.style.position = 'fixed';
+      tempArea.style.left = '-9999px';
+      document.body.appendChild(tempArea);
+      tempArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempArea);
+      indicateCopySuccess(triggerBtn);
+    } catch (err) {
+      showToast('No se pudo copiar automáticamente; selecciona el texto manualmente.');
+    }
+  }
+
+  function indicateCopySuccess(buttonElement) {
+    showToast('✓ Contenido íntegro copiado al portapapeles');
+    if (!buttonElement) return;
+    const originalText = buttonElement.textContent;
+    buttonElement.textContent = '✓ COPIADO';
+    setTimeout(function() {
+      buttonElement.textContent = originalText;
+    }, 1600);
+  }
+
+  document.addEventListener('click', function(event) {
+    const blockCopyBtn = event.target.closest('.copy-btn[data-copy-target]');
+    if (blockCopyBtn) {
+      const targetId = blockCopyBtn.getAttribute('data-copy-target');
+      const preElement = document.getElementById(targetId);
+      if (preElement) {
+        copyPlainText(preElement.textContent, blockCopyBtn);
+      }
+      return;
+    }
+
+    const rawCopyBtn = event.target.closest('[data-raw-copy]');
+    if (rawCopyBtn) {
+      const rawText = rawCopyBtn.getAttribute('data-raw-copy');
+      copyPlainText(rawText, rawCopyBtn);
+      return;
+    }
+
+    const openWindowBtn = event.target.closest('[data-open-url]');
+    if (openWindowBtn) {
+      const destinationUrl = openWindowBtn.getAttribute('data-open-url');
+      window.open(destinationUrl, '_blank', 'noopener,noreferrer');
+    }
+  });
+
+  /* =========================================================================
+     5. PERSISTENCIA SEGURA (LOCALSTORAGE), CHECKLIST, TEMA Y TAMAÑO DE FUENTE
+     ========================================================================= */
+  function saveStorageValue(key, value) {
+    try {
+      window.localStorage.setItem(key, value);
+    } catch (e) {
+      /* Entorno restringido sin localStorage: fallo silencioso seguro */
+    }
+  }
+
+  function readStorageValue(key, defaultValue) {
+    try {
+      const val = window.localStorage.getItem(key);
+      return val !== null ? val : defaultValue;
+    } catch (e) {
+      return defaultValue;
+    }
+  }
+
+  /* Tamaño de letra */
+  let currentFontSize = Number(readStorageValue('craft_font_size_v001', '16')) || 16;
+  function applyFontSize(sizePx) {
+    currentFontSize = Math.max(13, Math.min(22, sizePx));
+    document.documentElement.style.setProperty('--font-size-base', currentFontSize + 'px');
+    saveStorageValue('craft_font_size_v001', String(currentFontSize));
+  }
+  applyFontSize(currentFontSize);
+
+  document.getElementById('font-decrease-btn').addEventListener('click', function() {
+    applyFontSize(currentFontSize - 1);
+    showToast('Tamaño de letra: ' + currentFontSize + 'px');
+  });
+  document.getElementById('font-increase-btn').addEventListener('click', function() {
+    applyFontSize(currentFontSize + 1);
+    showToast('Tamaño de letra: ' + currentFontSize + 'px');
+  });
+
+  /* Tema claro / oscuro */
+  const savedTheme = readStorageValue('craft_theme_v001', 'dark');
+  if (savedTheme === 'light') {
+    document.body.classList.add('light-theme');
+  }
+  document.getElementById('theme-toggle-btn').addEventListener('click', function() {
+    const isLight = document.body.classList.toggle('light-theme');
+    saveStorageValue('craft_theme_v001', isLight ? 'light' : 'dark');
+    showToast(isLight ? 'Tema claro activado' : 'Tema oscuro activado');
+  });
+
+  /* Checklist persistente */
+  const checklistItems = document.querySelectorAll('.checklist-item[data-check-id]');
+  checklistItems.forEach(function(item) {
+    const checkId = item.getAttribute('data-check-id');
+    const checkbox = item.querySelector('input[type="checkbox"]');
+    const isSavedChecked = readStorageValue('craft_' + checkId, '0') === '1';
+    checkbox.checked = isSavedChecked;
+    item.classList.toggle('completed', isSavedChecked);
+
+    checkbox.addEventListener('change', function() {
+      item.classList.toggle('completed', checkbox.checked);
+      saveStorageValue('craft_' + checkId, checkbox.checked ? '1' : '0');
+    });
+  });
+
+  /* Expandir / Contraer las 33 Preguntas */
+  const expandAllQaBtn = document.getElementById('expand-all-qa-btn');
+  const collapseAllQaBtn = document.getElementById('collapse-all-qa-btn');
+  if (expandAllQaBtn && collapseAllQaBtn) {
+    expandAllQaBtn.addEventListener('click', function() {
+      document.querySelectorAll('details.qa-item').forEach(function(d) { d.open = true; });
+    });
+    collapseAllQaBtn.addEventListener('click', function() {
+      document.querySelectorAll('details.qa-item').forEach(function(d) { d.open = false; });
+    });
+  }
+
+  /* =========================================================================
+     6. BUSCADOR INTERNO INSTANTÁNEO ENTRE TODAS LAS PESTAÑAS
+     ========================================================================= */
+  const searchInput = document.getElementById('global-search-input');
+  const clearSearchBtn = document.getElementById('clear-search-btn');
+  const searchDrawer = document.getElementById('search-results-drawer');
+
+  function closeSearchDrawer() {
+    searchDrawer.style.display = 'none';
+    searchDrawer.innerHTML = '';
+  }
+
+  searchInput.addEventListener('input', function() {
+    const query = searchInput.value.trim().toLowerCase();
+    if (query.length < 2) {
+      closeSearchDrawer();
+      return;
+    }
+
+    const matches = [];
+    secs.forEach(function(sec, secIdx) {
+      const secTitle = sec.dataset.t || 'Sección';
+      const blocks = sec.querySelectorAll('h2, h3, h4, p, li, summary, td, pre');
+      blocks.forEach(function(block) {
+        const text = block.textContent.trim();
+        if (text.toLowerCase().includes(query) && matches.length < 15) {
+          matches.push({
+            secIdx: secIdx,
+            secTitle: secTitle,
+            snippet: text.slice(0, 130) + (text.length > 130 ? '...' : '')
+          });
+        }
+      });
+    });
+
+    searchDrawer.innerHTML = '';
+    if (matches.length === 0) {
+      searchDrawer.innerHTML = '<div class="search-hit-item">No se encontraron coincidencias para "' + query + '".</div>';
+    } else {
+      matches.forEach(function(hit) {
+        const div = document.createElement('div');
+        div.className = 'search-hit-item';
+        div.innerHTML = '<strong style="color:var(--brand-primary);">[' + hit.secTitle + ']</strong> ' + hit.snippet;
+        div.onclick = function() {
+          window.go(hit.secIdx);
+          closeSearchDrawer();
+        };
+        searchDrawer.appendChild(div);
+      });
+    }
+    searchDrawer.style.display = 'block';
+  });
+
+  clearSearchBtn.addEventListener('click', function() {
+    searchInput.value = '';
+    closeSearchDrawer();
+  });
+
+  /* =========================================================================
+     7. BARRA DE PROGRESO DE LECTURA E IMPRESIÓN A4 / PDF
+     ========================================================================= */
+  const progressBar = document.getElementById('reading-progress-bar');
+  window.addEventListener('scroll', function() {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const pct = Math.min(100, Math.max(0, (scrollTop / docHeight) * 100));
+    progressBar.style.width = pct + '%';
+  });
+
+  let closedDetailsBeforePrint = [];
+
+  function prepareDocumentForPrint() {
+    mountSvgIntoContainer('svg-target-home', 'heroHome');
+    mountSvgIntoContainer('svg-target-credits', 'heroCredits');
+    closedDetailsBeforePrint = [];
+    document.querySelectorAll('details.qa-item').forEach(function(detail) {
+      if (!detail.open) {
+        closedDetailsBeforePrint.push(detail);
+        detail.open = true;
+      }
+    });
+  }
+
+  function restoreDocumentAfterPrint() {
+    closedDetailsBeforePrint.forEach(function(detail) {
+      detail.open = false;
+    });
+    closedDetailsBeforePrint = [];
+  }
+
+  window.addEventListener('beforeprint', prepareDocumentForPrint);
+  window.addEventListener('afterprint', restoreDocumentAfterPrint);
+
+  document.getElementById('print-pdf-btn').addEventListener('click', function() {
+    try {
+      prepareDocumentForPrint();
+      window.print();
+    } catch (err) {
+      alert('Abre este archivo directamente en el navegador y utiliza Ctrl+P o Cmd+P');
+    }
+  });
+
+  /* =========================================================================
+     8. INICIALIZACIÓN AL CARGAR EL DOCUMENTO
+     ========================================================================= */
+  mountSvgIntoContainer('svg-target-home', 'heroHome');
+  mountSvgIntoContainer('svg-target-credits', 'heroCredits');
+
+  const initialTab = Number(readStorageValue('craft_active_tab_v001', '0')) || 0;
+  window.go(initialTab);
+})();
+</script>
+</body>
+</html>
